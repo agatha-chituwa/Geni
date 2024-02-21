@@ -1,3 +1,5 @@
+
+i have not connected the pages right now youll just have a slash screen and will lead you to the signup page
 # geni_app
 
 A new Flutter project.
