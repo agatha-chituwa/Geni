@@ -15,7 +15,7 @@ class _SlashState extends State<Slash> {
   @override
   void initState() {
     super.initState();
-    // _navigateToHome();
+    _navigateToHome();
   }
 
   _navigateToHome() async {
@@ -35,7 +35,7 @@ class _SlashState extends State<Slash> {
             height: 100,
             width: 100,
             child: Image(image: AssetImage('assets/images/200 px.png')),
-          ),
+          )
         ],
       ),
     ));
