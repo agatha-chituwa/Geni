@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:geni_app/login/signup.dart';
-import 'package:geni_app/main.dart';
 
 class Slash extends StatefulWidget {
   const Slash({super.key});
@@ -19,19 +16,19 @@ class _SlashState extends State<Slash> {
   }
 
   _navigateToHome() async {
-    await Future.delayed(Duration(milliseconds: 1500), () {});
+    await Future.delayed(const Duration(milliseconds: 1500), () {});
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Register()));
+        context, MaterialPageRoute(builder: (context) => const Register()));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
         body: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             height: 100,
             width: 100,
             child: Image(image: AssetImage('assets/images/200 px.png')),

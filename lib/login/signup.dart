@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:flutter/foundation.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -26,7 +25,7 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.only(top: 70.0, bottom: 70),
                   child: Center(
-                    child: Container(
+                    child: SizedBox(
                       width: 100,
                       height: 150,
                       //decoration: BoxDecoration(
@@ -45,7 +44,7 @@ class _RegisterState extends State<Register> {
                           errorText:
                               'business name should be atleast 3 charater'),
                     ]),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText: 'Enter Business Name',
                         labelText: 'Business Name',
                         prefixIcon: Icon(
@@ -67,7 +66,7 @@ class _RegisterState extends State<Register> {
                       PatternValidator(r'(^[0,9]{10}$)',
                           errorText: 'enter valid mobile number'),
                     ]),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText: 'Mobile Number',
                         labelText: 'Mobile',
                         prefixIcon: Icon(
@@ -87,7 +86,7 @@ class _RegisterState extends State<Register> {
                       RequiredValidator(errorText: 'Enter email address'),
                       EmailValidator(errorText: 'Please correct email filled'),
                     ]),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText: 'Email Address',
                         labelText: 'Email',
                         prefixIcon: Icon(
@@ -104,7 +103,7 @@ class _RegisterState extends State<Register> {
                 Center(
                     child: Padding(
                   padding: const EdgeInsets.all(18.0),
-                  child: Container(
+                  child: SizedBox(
                     // margin: EdgeInsets.fromLTRB(200, 20, 50, 0),
 
                     width: MediaQuery.of(context).size.width,
@@ -114,14 +113,13 @@ class _RegisterState extends State<Register> {
                 )),
                 Center(
                     child: Container(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Container(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: SizedBox(
                     width: 120,
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary:
-                            Color(0xFF19CA79), // Set the button color to green
+                        backgroundColor: const Color(0xFF19CA79), // Set the button color to green
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               20.0), // Adjust the radius as needed
@@ -130,7 +128,7 @@ class _RegisterState extends State<Register> {
                       onPressed: () {
                         // Add your sign-in logic here
                       },
-                      child: Text(
+                      child: const Text(
                         'sign up',
                         style: TextStyle(
                           fontSize: 20,

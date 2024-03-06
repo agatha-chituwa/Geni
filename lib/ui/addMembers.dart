@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class AddMembers extends StatelessWidget {
   const AddMembers({super.key});
@@ -9,7 +7,7 @@ class AddMembers extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-            padding: EdgeInsets.all(60),
+            padding: const EdgeInsets.all(60),
             alignment: Alignment.center,
             child: Column(
               children: [
@@ -18,33 +16,33 @@ class AddMembers extends StatelessWidget {
                     width: 100,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Icon(Icons.person),
                       style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                         //border radius equal to or more than 50% of width
                       )),
+                      child: const Icon(Icons.person),
                     )),
-                Divider(),
+                const Divider(),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text("Elevated Button with Border Radius"),
                   style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   )),
+                  child: const Text("Elevated Button with Border Radius"),
                 ),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text("Elevated Button with Radius on Corner"),
                   style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.elliptical(10, 40)
                               //  bottomLeft:, bottom left
                               // bottomRight: bottom right
                               ))),
+                  child: const Text("Elevated Button with Radius on Corner"),
                 ),
               ],
             )));

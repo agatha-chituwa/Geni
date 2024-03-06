@@ -9,7 +9,6 @@ class Verify extends StatefulWidget {
 }
 
 class _VerifyState extends State<Verify> {
-  @override
   bool _onEditing = true;
   String? _code;
 
@@ -40,7 +39,7 @@ class _VerifyState extends State<Verify> {
               VerificationCode(
                 textStyle: Theme.of(context)
                     .textTheme
-                    .bodyText2!
+                    .bodyMedium!
                     .copyWith(color: Theme.of(context).primaryColor),
                 keyboardType: TextInputType.number,
                 underlineColor: Colors.amber,
@@ -85,7 +84,7 @@ class _VerifyState extends State<Verify> {
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
                 onPressed: () {},
-                child: Text('Verify'),
+                child: const Text('Verify'),
               ),
             ),
           ),
