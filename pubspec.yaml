@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   form_field_validator: ^1.1.0
   flutter_verification_code: ^1.1.7
+  dropdown_textfield: ^1.0.8
+  user_profile_avatar: ^0.1.2
 
 dev_dependencies:
   flutter_test:

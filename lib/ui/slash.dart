@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:geni_app/login/signup.dart';
 import 'package:geni_app/main.dart';
+import 'package:geni_app/ui/addMembers.dart';
 
 class Slash extends StatefulWidget {
   const Slash({super.key});

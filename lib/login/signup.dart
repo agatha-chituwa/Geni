@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geni_app/ui/addMembers.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -129,6 +130,14 @@ class _RegisterState extends State<Register> {
                       ),
                       onPressed: () {
                         // Add your sign-in logic here
+
+                        // Navigate to the next page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AddMembers()), // Replace NextPage() with the actual widget for your next page
+                        );
                       },
                       child: Text(
                         'sign up',
