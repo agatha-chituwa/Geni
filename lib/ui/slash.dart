@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/login/signup.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import '../firebase_options.dart';
+
 class Slash extends StatefulWidget {
   const Slash({super.key});
 
@@ -16,7 +19,7 @@ class _SlashState extends State<Slash> {
   }
 
   _navigateToHome() async {
-    await Future.delayed(const Duration(milliseconds: 1500), () {});
+    await _initializeApp();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const Register()));
   }
@@ -36,5 +39,11 @@ class _SlashState extends State<Slash> {
         ],
       ),
     ));
+  }
+  
+  _initializeApp() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 }

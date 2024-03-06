@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/ui/slash.dart';
 
-void main() {
+main() {
   runApp(const MyApp());
 }
 
