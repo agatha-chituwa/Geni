@@ -6,7 +6,7 @@ class BusinessMember {
   final DocumentReference memberReference; // Reference to another document (unclear)
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String id;
+  final DocumentReference ref;
 
   BusinessMember({
     required this.userReference,
@@ -14,7 +14,7 @@ class BusinessMember {
     required this.memberReference,
     required this.createdAt,
     required this.updatedAt,
-    required this.id,
+    required this.ref,
   });
 
   factory BusinessMember.fromMap(Map<String, dynamic> data) {
@@ -24,7 +24,7 @@ class BusinessMember {
       memberReference: data['memberReference'] as DocumentReference,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      id: data['id'] as String,
+      ref: data['ref'] as DocumentReference,
     );
   }
 
@@ -35,7 +35,7 @@ class BusinessMember {
       'memberReference': memberReference,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
-      'id': id,
+      'ref': ref,
     };
   }
 }

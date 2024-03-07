@@ -7,9 +7,8 @@ class User {
   final String phone;
   final DateTime createdAt;
   final DateTime updatedAt;
-  String? id;
+  DocumentReference? ref;
 
-  List<Role>? roles;
 
   User({
     required this.name,
@@ -17,8 +16,7 @@ class User {
     required this.phone,
     required this.createdAt,
     required this.updatedAt,
-    required this.id,
-    this.roles,
+    this.ref,
   });
 
   factory User.fromMap(Map<String, dynamic> data) {
@@ -28,8 +26,7 @@ class User {
       phone: data['Phone'] as String,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      id: data['id'] as String,
-      roles: (data['Roles'] as List?)?.map((role) => Role.fromMap(role)).toList(),
+      ref: data['ref'] as DocumentReference?,
     );
   }
 
@@ -40,8 +37,7 @@ class User {
       'Phone': phone,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
-      'id': id,
-      'Roles': roles?.map((role) => role.toMap()).toList(),
+      'ref': ref,
     };
   }
 }

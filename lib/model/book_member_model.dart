@@ -6,7 +6,7 @@ class BookMember {
   final DocumentReference bookReference; // Reference to the Book document
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String id;
+  final DocumentReference ref; // Reference to the BookMember document
 
   BookMember({
     required this.userReference,
@@ -14,7 +14,7 @@ class BookMember {
     required this.bookReference,
     required this.createdAt,
     required this.updatedAt,
-    required this.id,
+    required this.ref,
   });
 
   factory BookMember.fromMap(Map<String, dynamic> data) {
@@ -24,7 +24,7 @@ class BookMember {
       bookReference: data['bookReference'] as DocumentReference,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      id: data['id'] as String,
+      ref: data['ref'] as DocumentReference,
     );
   }
 
@@ -35,7 +35,7 @@ class BookMember {
       'bookReference': bookReference,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
-      'id': id,
+      'ref': ref,
     };
   }
 }

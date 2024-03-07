@@ -4,21 +4,21 @@ class Role {
   final String name;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String id;
+  final DocumentReference ref;
 
   Role({
     required this.name,
     required this.createdAt,
     required this.updatedAt,
-    required this.id,
+    required this.ref,
   });
 
-  factory Role.fromMap(Map<String, dynamic> data) {
+  factory Role.fromMap(Map<String, dynamic> data, DocumentReference ref) {
     return Role(
       name: data['Name'] as String,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      id: data['id'] as String,
+      ref: ref,
     );
   }
 
@@ -27,7 +27,7 @@ class Role {
       'Name': name,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
-      'id': id,
+      'ref': ref,
     };
   }
 }

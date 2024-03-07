@@ -5,23 +5,23 @@ class Book {
   final String description;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String id;
+  final DocumentReference ref;
 
   Book({
     required this.name,
     required this.description,
     required this.createdAt,
     required this.updatedAt,
-    required this.id,
+    required this.ref,
   });
 
-  factory Book.fromMap(Map<String, dynamic> data) {
+  factory Book.fromMap(Map<String, dynamic> data, DocumentReference ref) {
     return Book(
       name: data['Name'] as String,
       description: data['Description'] as String,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      id: data['id'] as String,
+      ref: ref,
     );
   }
 
@@ -31,7 +31,7 @@ class Book {
       'Description': description,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
-      'id': id,
+      'ref': ref,
     };
   }
 }

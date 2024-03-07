@@ -5,9 +5,8 @@ class UserRepository {
   final DataModel _dataModel = DataModel();
 
   Future<void> addUser(User user) {
-    final ref = _dataModel.usersCollection.doc();
-    user.id = ref.id;
-    return ref.set(user.toMap());
+    user.ref = _dataModel.usersCollection.doc();
+    return user.ref!.set(user.toMap());
   }
 
   Stream<List<User>> getUsers() {
@@ -17,16 +16,14 @@ class UserRepository {
   }
 
   Future<void> updateUser(User user) {
-    return _dataModel.usersCollection.doc(user.id).update(user.toMap());
+    return user.ref!.update(user.toMap());
   }
 
-  Future<void> deleteUser(String id) {
-    return _dataModel.usersCollection.doc(id).delete();
+  Future<void> deleteUser(User user) {
+    return user.ref!.delete();
   }
 
-  Future<User> getUser(String id) {
+  Future<User> getUserById(String id) {
     return _dataModel.usersCollection.doc(id).get().then((doc) => User.fromMap(doc.data() as Map<String, dynamic>));
   }
-
-  
 }

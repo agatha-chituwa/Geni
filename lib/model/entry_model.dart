@@ -7,7 +7,7 @@ class Entry {
   final DocumentReference paymentModeRef;  // Reference to the PaymentMode document
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String id;
+  final DocumentReference ref; // Reference to the Entry document
 
   Entry({
     required this.amount,
@@ -16,7 +16,7 @@ class Entry {
     required this.paymentModeRef,
     required this.createdAt,
     required this.updatedAt,
-    required this.id,
+    required this.ref,
   });
 
   factory Entry.fromMap(Map<String, dynamic> data) {
@@ -27,7 +27,7 @@ class Entry {
       paymentModeRef: data['paymentModeRef'] as DocumentReference,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      id: data['id'] as String,
+      ref: data['ref'] as DocumentReference,
     );
   }
 
@@ -39,7 +39,7 @@ class Entry {
       'paymentModeRef': paymentModeRef,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
-      'id': id,
+      'ref': ref,
     };
   }
 }

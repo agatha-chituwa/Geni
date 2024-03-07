@@ -4,21 +4,21 @@ class PaymentMode {
   final String name;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String id;
+  final DocumentReference ref;
 
   PaymentMode({
     required this.name,
     required this.createdAt,
     required this.updatedAt,
-    required this.id,
+    required this.ref,
   });
 
-  factory PaymentMode.fromMap(Map<String, dynamic> data) {
+  factory PaymentMode.fromMap(Map<String, dynamic> data, DocumentReference ref) {
     return PaymentMode(
       name: data['Name'] as String,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      id: data['id'] as String,
+      ref: ref,
     );
   }
 
@@ -27,7 +27,7 @@ class PaymentMode {
       'Name': name,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
-      'id': id,
+      'ref': ref,
     };
   }
 }
