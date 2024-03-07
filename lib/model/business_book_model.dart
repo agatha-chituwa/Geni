@@ -1,26 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class BookMember {
-  final DocumentReference userReference; // Reference to the User document
-  final DocumentReference roleReference;  // Reference to the Role document
+class BusinessBook {
+  final DocumentReference businessReference; // Reference to the Business document
   final DocumentReference bookReference; // Reference to the Book document
   final DateTime createdAt;
   final DateTime updatedAt;
-  final DocumentReference ref; // Reference to the BookMember document
+  final DocumentReference ref; // Reference to the BusinessBook document itself
 
-  BookMember({
-    required this.userReference,
-    required this.roleReference,
+  BusinessBook({
+    required this.businessReference,
     required this.bookReference,
     required this.createdAt,
     required this.updatedAt,
     required this.ref,
   });
 
-  factory BookMember.fromMap(Map<String, dynamic> data) {
-    return BookMember(
-      userReference: data['userReference'] as DocumentReference,
-      roleReference: data['roleReference'] as DocumentReference,
+  factory BusinessBook.fromMap(Map<String, dynamic> data) {
+    return BusinessBook(
+      businessReference: data['businessReference'] as DocumentReference,
       bookReference: data['bookReference'] as DocumentReference,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
@@ -30,8 +27,7 @@ class BookMember {
 
   Map<String, dynamic> toMap() {
     return {
-      'userReference': userReference,
-      'roleReference': roleReference,
+      'businessReference': businessReference,
       'bookReference': bookReference,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
