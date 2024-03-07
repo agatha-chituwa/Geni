@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geni_app/model/role_model.dart';
 
 class User {
   final String name;
