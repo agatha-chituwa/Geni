@@ -5,7 +5,7 @@ class UserRepository {
   final DataModel _dataModel = DataModel();
 
   Future<void> addUser(User user) {
-    user.ref = _dataModel.usersCollection.doc();
+    user.ref = _dataModel.usersCollection.doc(user.phone);
     return user.ref!.set(user.toMap());
   }
 

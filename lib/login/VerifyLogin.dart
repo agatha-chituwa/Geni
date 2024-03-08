@@ -1,7 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
+import 'package:geni_app/state_providers/auth_provider.dart';
+import 'package:geni_app/ui/home_page.dart';
+import 'package:provider/provider.dart';
 
 class VerifyLogin extends StatefulWidget {
   const VerifyLogin({super.key});
@@ -12,15 +13,54 @@ class VerifyLogin extends StatefulWidget {
 
 class _VerifyLoginState extends State<VerifyLogin> {
   bool _onEditing = true;
+  bool _isLoading = false;
 
   String? _code;
 
   @override
+  void initState() {
+    super.initState();
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.addListener(() {
+      if (authProvider.verificationState == "failed") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Verification failed'),
+          ),
+        );
+      } else if (authProvider.verificationState == "code-sent") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Code sent'),
+          ),
+        );
+      } else if (authProvider.verificationState == "verified") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Code verified'),
+          ),
+        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      } else if (authProvider.verificationState == "timeout") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Verification timeout'),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEFE9E9),
-      body: SingleChildScrollView(
-        child: Column(
+      backgroundColor: const Color(0xFFEFE9E9),
+      body: _isLoading? const Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
+        child:  Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Logo Image
@@ -39,7 +79,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
             ),
 
             Container(
-              margin: EdgeInsets.symmetric(
+              margin: const EdgeInsets.symmetric(
                 horizontal: 20,
               ),
               child: Padding(
@@ -50,8 +90,8 @@ class _VerifyLoginState extends State<VerifyLogin> {
                     color: Colors.white,
                     child: Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20.0),
                           child: Text(
                             "Please verify your account",
                             style: TextStyle(
@@ -89,7 +129,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
                                     color: Colors.red[700]),
                               ),
                             ),
-                            margin: const EdgeInsets.all(12),
+                            margin: const EdgeInsets.all(1),
                             onCompleted: (String value) {
                               setState(() {
                                 _code = value;
@@ -124,14 +164,24 @@ class _VerifyLoginState extends State<VerifyLogin> {
             // Verify Button
             Center(
               child: Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   bottom: 50,
                 ),
                 child: SizedBox(
                   width: 120,
                   height: 50,
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        final authProvider =
+                            Provider.of<AuthProvider>(context, listen: false);
+                        await authProvider.signInWithVerificationCode(_code!);
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Color(0xFF19CA79),

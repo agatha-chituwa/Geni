@@ -35,6 +35,7 @@ class AuthProvider with ChangeNotifier {
   initialize() {
     _firebaseAuth = FirebaseAuth.instance;
     _currentUser = _firebaseAuth.currentUser;
+    debugPrint("Current user: $_currentUser");
     _isSignedIn = _currentUser != null;
     _firebaseAuth.authStateChanges().listen((User? user) {
       _isSignedIn = user != null;
@@ -131,7 +132,7 @@ class AuthProvider with ChangeNotifier {
 }
 
   _checkUser() async {
-    if ((await DataModel().userBookCollection.doc(_phoneNumber).get()).exists) {
+    if (!(await DataModel().usersCollection.doc(_phoneNumber).get()).exists) {
       final mUser = user_model.User(
       name: _name,
       email: _email,
@@ -139,12 +140,17 @@ class AuthProvider with ChangeNotifier {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
-
+    debugPrint("User: ${_firebaseAuth.currentUser}");
     await UserRepository().addUser(mUser);
       return true;
     } else {
       return true;
     }
+  }
+
+  signIn({required String mobile}) {
+    _phoneNumber = mobile;
+    return startPhoneVerification(mobile);
   }
 
 }
