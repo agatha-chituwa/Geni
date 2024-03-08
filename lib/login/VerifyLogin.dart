@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
+import 'package:geni_app/state_providers/auth_provider.dart';
+import 'package:geni_app/ui/home_page.dart';
+import 'package:provider/provider.dart';
 
 class VerifyLogin extends StatefulWidget {
   const VerifyLogin({super.key});
@@ -12,15 +15,54 @@ class VerifyLogin extends StatefulWidget {
 
 class _VerifyLoginState extends State<VerifyLogin> {
   bool _onEditing = true;
+  bool _isLoading = false;
 
   String? _code;
 
   @override
+  void initState() {
+    super.initState();
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.addListener(() {
+      if (authProvider.verificationState == "failed") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Verification failed'),
+          ),
+        );
+      } else if (authProvider.verificationState == "code-sent") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Code sent'),
+          ),
+        );
+      } else if (authProvider.verificationState == "verified") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Code verified'),
+          ),
+        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      } else if (authProvider.verificationState == "timeout") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Verification timeout'),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEFE9E9),
+      backgroundColor: const Color(0xFFEFE9E9),
       body: SingleChildScrollView(
-        child: Column(
+        child:  _isLoading? const Center(child: CircularProgressIndicator(),) : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Logo Image
@@ -75,7 +117,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
                                     color: Theme.of(context).primaryColor),
                             keyboardType: TextInputType.number,
                             underlineColor: Colors.amber,
-                            length: 4,
+                            length: 6,
                             cursorColor: Colors.blue,
                             clearAll: Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -87,7 +129,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
                                     color: Colors.blue[700]),
                               ),
                             ),
-                            margin: const EdgeInsets.all(12),
+                            margin: const EdgeInsets.all(1),
                             onCompleted: (String value) {
                               setState(() {
                                 _code = value;
@@ -118,10 +160,16 @@ class _VerifyLoginState extends State<VerifyLogin> {
 
             // Verify Button
             Container(
-              margin: EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 20),
               child: SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(onPressed: () {}, child: Text("verify")),
+                child: ElevatedButton(onPressed: () async {
+                  _isLoading = true;
+                  final authProvider =
+                      Provider.of<AuthProvider>(context, listen: false);
+                  await authProvider.signInWithVerificationCode(_code!);
+                  _isLoading = false;
+                }, child: const Text("verify")),
               ),
             ),
           ],

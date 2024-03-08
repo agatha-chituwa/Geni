@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:geni_app/login/verify.dart';
+import 'package:geni_app/login/VerifyLogin.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -24,20 +24,28 @@ class _RegisterState extends State<Register> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.addListener(() { 
       if (authProvider.verificationState == "failed") {
         _isLoading = false;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Sign up failed'),
-          ),
-        );
+        try {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Verification failed'),
+            ),
+          );
+        } catch (e) {
+          debugPrint("Error: $e");
+        }
       } else if (authProvider.verificationState == "code-sent") {
         _isLoading = false;
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Verify()));
+        try {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const VerifyLogin()));
+        } catch (e) {
+          debugPrint("Error: $e");
+        }
+        
       }
     });
   }
