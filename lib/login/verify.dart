@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
+import 'package:geni_app/state_providers/auth_provider.dart';
+import 'package:geni_app/ui/home_page.dart';
+import 'package:provider/provider.dart';
 
 class Verify extends StatefulWidget {
   const Verify({super.key});
@@ -11,11 +14,50 @@ class Verify extends StatefulWidget {
 class _VerifyState extends State<Verify> {
   bool _onEditing = true;
   String? _code;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.addListener(() {
+      if (authProvider.verificationState == "failed") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Verification failed'),
+          ),
+        );
+      } else if (authProvider.verificationState == "code-sent") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Code sent'),
+          ),
+        );
+      } else if (authProvider.verificationState == "verified") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Code verified'),
+          ),
+        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      } else if (authProvider.verificationState == "timeout") {
+        _onEditing = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Verification timeout'),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: _isLoading? const Center(child: CircularProgressIndicator(),) : Stack(
         children: [
           Column(
             children: [
@@ -67,6 +109,7 @@ class _VerifyState extends State<Verify> {
                   });
                   if (!_onEditing) FocusScope.of(context).unfocus();
                 },
+                
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -83,7 +126,13 @@ class _VerifyState extends State<Verify> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  _isLoading = true;
+                  final authProvider =
+                      Provider.of<AuthProvider>(context, listen: false);
+                  await authProvider.signInWithVerificationCode(_code!);
+                  _isLoading = false;
+                },
                 child: const Text('Verify'),
               ),
             ),

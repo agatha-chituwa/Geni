@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/login/signup.dart';
+import 'package:geni_app/ui/home_page.dart';
+import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:geni_app/state_providers/auth_provider.dart';
 import '../firebase_options.dart';
 
 class Slash extends StatefulWidget {
@@ -15,17 +18,20 @@ class _SlashState extends State<Slash> {
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
   }
 
   _navigateToHome() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     await _initializeApp();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const Register()));
+        context, MaterialPageRoute(
+          builder: (context) => authProvider.isSignedIn? HomePage() : const Register()
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
+    _navigateToHome();
     return const Scaffold(
         body: Center(
       child: Column(
@@ -45,5 +51,6 @@ class _SlashState extends State<Slash> {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    Provider.of<AuthProvider>(context, listen: false).initialize();
   }
 }
