@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geni_app/login/VerifyLogin.dart';
 import 'package:geni_app/ui/slash.dart';
 
 main() {
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const VerifyLogin(),
+      home: const Slash(),
     );
   }
 }
