@@ -84,7 +84,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
                                 style: TextStyle(
                                     fontSize: 14.0,
                                     decoration: TextDecoration.underline,
-                                    color: Colors.blue[700]),
+                                    color: Colors.red[700]),
                               ),
                             ),
                             margin: const EdgeInsets.all(12),
@@ -104,10 +104,13 @@ class _VerifyLoginState extends State<VerifyLogin> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
-                            child: _onEditing
-                                ? const Text('Please enter full code')
-                                : Text('Your code: $_code'),
-                          ),
+                              child: Text(
+                            "resend",
+                            style: TextStyle(
+                                fontSize: 14.0,
+                                decoration: TextDecoration.underline,
+                                color: Colors.blue[700]),
+                          )),
                         ),
                       ],
                     ),
@@ -117,11 +120,22 @@ class _VerifyLoginState extends State<VerifyLogin> {
             ),
 
             // Verify Button
-            Container(
-              margin: EdgeInsets.only(bottom: 20),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(onPressed: () {}, child: Text("verify")),
+            Center(
+              child: Container(
+                margin: EdgeInsets.only(
+                  bottom: 50,
+                ),
+                child: SizedBox(
+                  width: 120,
+                  height: 50,
+                  child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color(0xFF19CA79),
+                      ),
+                      child: Text("verify")),
+                ),
               ),
             ),
           ],
