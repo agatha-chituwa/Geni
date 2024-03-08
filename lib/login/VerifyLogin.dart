@@ -84,7 +84,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
                                 style: TextStyle(
                                     fontSize: 14.0,
                                     decoration: TextDecoration.underline,
-                                    color: Colors.blue[700]),
+                                    color: Colors.red[700]),
                               ),
                             ),
                             margin: const EdgeInsets.all(12),
@@ -103,7 +103,14 @@ class _VerifyLoginState extends State<VerifyLogin> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Center(child: Text("resend")),
+                          child: Center(
+                              child: Text(
+                            "resend",
+                            style: TextStyle(
+                                fontSize: 14.0,
+                                decoration: TextDecoration.underline,
+                                color: Colors.blue[700]),
+                          )),
                         ),
                       ],
                     ),
