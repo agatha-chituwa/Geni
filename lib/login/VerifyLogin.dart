@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/ui/home_page.dart';
