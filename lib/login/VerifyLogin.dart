@@ -59,8 +59,8 @@ class _VerifyLoginState extends State<VerifyLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEFE9E9),
-      body: SingleChildScrollView(
-        child:  _isLoading? const Center(child: CircularProgressIndicator(),) : Column(
+      body: _isLoading? const Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
+        child:  Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Logo Image
@@ -79,7 +79,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
             ),
 
             Container(
-              margin: EdgeInsets.symmetric(
+              margin: const EdgeInsets.symmetric(
                 horizontal: 20,
               ),
               child: Padding(
@@ -90,8 +90,8 @@ class _VerifyLoginState extends State<VerifyLogin> {
                     color: Colors.white,
                     child: Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20.0),
                           child: Text(
                             "Please verify your account",
                             style: TextStyle(fontSize: 20.0),
@@ -162,7 +162,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
             // Verify Button
             Center(
               child: Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   bottom: 50,
                 ),
                 child: SizedBox(
@@ -170,11 +170,15 @@ class _VerifyLoginState extends State<VerifyLogin> {
                   height: 50,
                   child: ElevatedButton(
                       onPressed: () async {
-                        _isLoading = true;
+                        setState(() {
+                          _isLoading = true;
+                        });
                         final authProvider =
                             Provider.of<AuthProvider>(context, listen: false);
                         await authProvider.signInWithVerificationCode(_code!);
-                        _isLoading = false;
+                        setState(() {
+                          _isLoading = false;
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,

@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geni_app/login/VerifyLogin.dart';
-import 'package:geni_app/login/login.dart';
+import 'package:geni_app/login/signup.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<Login> createState() => _LoginState();
 }
 
-class _RegisterState extends State<Register> {
-  Map userData = {};
-  final _formkey = GlobalKey<FormState>();
+class _LoginState extends State<Login> {
   bool _isLoading = false;
+  final _formkey = GlobalKey<FormState>();
 
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _name = TextEditingController();
   final TextEditingController _mobile = TextEditingController();
   
   get areaCode => "+265";
@@ -68,36 +65,8 @@ class _RegisterState extends State<Register> {
                     child: SizedBox(
                       width: 100,
                       height: 150,
-                      //decoration: BoxDecoration(
-                      //borderRadius: BorderRadius.circular(40),
-                      //border: Border.all(color: Colors.blueGrey)),
                       child: Image.asset('assets/images/200 px.png'),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: 'Enter full name'),
-                      MinLengthValidator(3,
-                          errorText:
-                              'Name should be atleast 3 charater'),
-                    ]),
-                    decoration: const InputDecoration(
-                        hintText: 'Enter Full Name',
-                        labelText: 'Full Name',
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: Colors.grey,
-                        ),
-                        errorStyle: TextStyle(fontSize: 18.0),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25.0)))),
-                    controller: _name,
-                    enabled: !_isLoading,
                   ),
                 ),
                 Padding(
@@ -123,35 +92,10 @@ class _RegisterState extends State<Register> {
                     enabled: !_isLoading,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: 'Enter email address'),
-                      EmailValidator(errorText: 'Please correct email filled'),
-                    ]),
-                    decoration: const InputDecoration(
-                        hintText: 'Email Address',
-                        labelText: 'Email',
-                        prefixIcon: Icon(
-                          Icons.email,
-                          color: Colors.grey,
-                        ),
-                        errorStyle: TextStyle(fontSize: 18.0),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25.0)))),
-                    controller: _email,
-                    enabled: !_isLoading,
-                  ),
-                ),
                 Center(
                     child: Padding(
                   padding: const EdgeInsets.all(18.0),
                   child: SizedBox(
-                    // margin: EdgeInsets.fromLTRB(200, 20, 50, 0),
-
                     width: MediaQuery.of(context).size.width,
 
                     height: 50,
@@ -165,10 +109,10 @@ class _RegisterState extends State<Register> {
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF19CA79), // Set the button color to green
+                        backgroundColor: const Color(0xFF19CA79),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              20.0), // Adjust the radius as needed
+                              20.0),
                         ),
                       ),
                       onPressed: () {
@@ -178,7 +122,7 @@ class _RegisterState extends State<Register> {
                         }
                       },
                       child: _isLoading? const Center(child: CircularProgressIndicator(),) : const Text(
-                        'sign up',
+                        'Login',
                         style: TextStyle(
                           fontSize: 20,
                         ),
@@ -190,14 +134,14 @@ class _RegisterState extends State<Register> {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Login()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Register()));
                     },
                     child: const Text(
-                      'Already have an account? Login',
+                      'Don\'t have an account? Sign Up',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.blue,
-                        decoration: TextDecoration.underline, // Add underline decoration
+                        decoration: TextDecoration.underline, 
                       ),
                     ),
                   ),
@@ -213,22 +157,8 @@ class _RegisterState extends State<Register> {
     setState(() {
       _isLoading = true;
     });
-    final result = await authProvider.signUp(
-        email: _email.text,
-        name: _name.text,
+    final result = await authProvider.signIn(
         mobile: "$areaCode${_mobile.text}");
     //_isLoading = false;
-
-    // if (!context.mounted) return;
-
-    // if (result) {
-    //   Navigator.pushReplacementNamed(context, '/home');
-    // } else {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Sign up failed'),
-    //     ),
-    //   );
-    // }
   }
 }
