@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/ui/slash.dart';
+import 'package:provider/provider.dart';
 
 main() {
-  runApp(const MyApp());
+  runApp(
+    // Wrap your main app widget with ChangeNotifierProvider
+    ChangeNotifierProvider(
+      create: (context) => AuthProvider(), // Create an instance of AuthProvider
+      child: const MyApp(), // Your main app widget
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
