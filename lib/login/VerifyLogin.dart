@@ -94,7 +94,9 @@ class _VerifyLoginState extends State<VerifyLogin> {
                           padding: EdgeInsets.only(top: 20.0),
                           child: Text(
                             "Please verify your account",
-                            style: TextStyle(fontSize: 20.0),
+                            style: TextStyle(
+                              fontSize: 20.0,
+                            ),
                           ),
                         ),
                         // const Padding(
@@ -184,7 +186,12 @@ class _VerifyLoginState extends State<VerifyLogin> {
                         foregroundColor: Colors.white,
                         backgroundColor: Color(0xFF19CA79),
                       ),
-                      child: Text("verify")),
+                      child: Text(
+                        "verify",
+                        style: TextStyle(
+                          fontSize: 19.0,
+                        ),
+                      )),
                 ),
               ),
             ),
