@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geni_app/model/book_model.dart';
 
 class UserBook {
   final DocumentReference userReference; // Reference to the User document
@@ -6,7 +7,9 @@ class UserBook {
   final DocumentReference bookReference; // Reference to the Book document
   final DateTime createdAt;
   final DateTime updatedAt;
-  final DocumentReference ref; // Reference to the UserBook document itself
+  DocumentReference? ref;
+
+  Book? book; // Reference to the UserBook document itself
 
   UserBook({
     required this.userReference,

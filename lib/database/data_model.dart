@@ -9,13 +9,10 @@ class DataModel {
   final CollectionReference booksCollection = FirebaseFirestore.instance.collection(DataModel.booksCollectionId);
   final CollectionReference userBookCollection = FirebaseFirestore.instance.collection(DataModel.userBookCollectionId);
   final CollectionReference businessBookCollection = FirebaseFirestore.instance.collection(DataModel.businessBookCollectionId);
-  
+  final CollectionReference businessMembersCollection = FirebaseFirestore.instance.collection(DataModel.businessMembersCollectionId);
+
   CollectionReference<Object?> entriesCollection(DocumentReference bookRef) {
     return bookRef.collection(DataModel.entriesCollectionId);
-  }
-
-  CollectionReference<Object?> businessMembersCollection(DocumentReference businessRef) {
-    return businessRef.collection(DataModel.businessMembersCollectionId);
   }
   
   CollectionReference<Object?> businessBookMemberCollection(DocumentReference businessBookRef) {

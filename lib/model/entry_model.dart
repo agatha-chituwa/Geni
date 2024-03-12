@@ -7,7 +7,7 @@ class Entry {
   final DocumentReference paymentModeRef;  // Reference to the PaymentMode document
   final DateTime createdAt;
   final DateTime updatedAt;
-  final DocumentReference ref; // Reference to the Entry document
+  DocumentReference? ref; // Reference to the Entry document
 
   Entry({
     required this.amount,

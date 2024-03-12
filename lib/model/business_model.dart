@@ -6,7 +6,7 @@ class Business {
   final String location;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final DocumentReference ref;
+  DocumentReference? ref;
 
   Business({
     required this.name,
@@ -17,14 +17,14 @@ class Business {
     required this.ref,
   });
 
-  factory Business.fromMap(Map<String, dynamic> data, DocumentReference ref) {
+  factory Business.fromMap(Map<String, dynamic> data) {
     return Business(
       name: data['Name'] as String,
       numberOfEmployees: data['numberOfEmployees'] as int,
       location: data['Location'] as String,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      ref: ref,
+      ref: data['ref'] as DocumentReference?,
     );
   }
 
