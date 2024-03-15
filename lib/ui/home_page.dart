@@ -30,15 +30,8 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: const Color(0xFFEFE9E9),
       body: Stack(
         children: [
-          PageView(
-            controller: _pageController,
-            children: [
-              buildCard(),
-              buildCard1(),
-            ],
-          ),
           Positioned(
-            bottom: 20,
+            top: 20,
             left: 10,
             child: IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -53,7 +46,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Positioned(
-            bottom: 20,
+            top: 20,
             right: 10,
             child: IconButton(
               icon: const Icon(Icons.arrow_forward),
@@ -67,7 +60,24 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
+
+          PageView(
+            controller: _pageController,
+            children: [
+              buildCard(),
+              buildCard1(),
+            ],
+          ),
         ],
+      ),
+      // Floating action button for adding a new business
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Add a new business
+        },
+        backgroundColor: const Color(0xFF19CA79),
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text('Business', style: TextStyle(color: Colors.white)),
       ),
     );
   }
