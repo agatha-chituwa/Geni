@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/login/signup.dart';
+import 'package:geni_app/state_providers/book_provider.dart';
+import 'package:geni_app/state_providers/users_provider.dart';
 import 'package:geni_app/ui/home_page.dart';
 import 'package:provider/provider.dart';
 
@@ -52,5 +54,7 @@ class _SlashState extends State<Slash> {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     Provider.of<AuthProvider>(context, listen: false).initialize();
+    await Provider.of<UsersProvider>(context, listen: false).init();
+    await Provider.of<BookProvider>(context, listen: false).init();
   }
 }

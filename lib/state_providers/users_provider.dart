@@ -3,12 +3,12 @@ import 'package:geni_app/model/user_model.dart';
 import 'package:geni_app/repositories/user_repository.dart';
 
 class UsersProvider with ChangeNotifier {
-  final UserRepository _userRepository;
+  late UserRepository _userRepository;
   List<User> _users = [];
 
-  UsersProvider(this._userRepository) {
-    // Load initial users from the repository
-    _loadUsers();
+  init() async {
+    _userRepository = UserRepository();
+    await _loadUsers();
   }
 
   List<User> get users => _users;

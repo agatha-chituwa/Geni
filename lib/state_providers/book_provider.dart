@@ -19,6 +19,10 @@ class BookProvider extends ChangeNotifier {
   List<Entry> _entries = [];
   List<Entry> get entries => _entries;
 
+  init() async {
+    await getBooks();
+  }
+
   Future<void> getBooks() async {
     _books = await _bookRepository.getBooks().first;
     notifyListeners();

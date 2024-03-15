@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
+import 'package:geni_app/state_providers/book_provider.dart';
+import 'package:geni_app/state_providers/users_provider.dart';
 import 'package:geni_app/ui/home_page.dart';
 import 'package:provider/provider.dart';
 
 main() {
   runApp(
     // Wrap your main app widget with ChangeNotifierProvider
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(), // Create an instance of AuthProvider
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => BookProvider()),
+        ChangeNotifierProvider(create:(context) => UsersProvider(),)
+      ],
       child: const MyApp(), // Your main app widget
     ),
   );
