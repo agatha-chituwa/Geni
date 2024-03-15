@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
+import 'package:geni_app/state_providers/book_provider.dart';
+import 'package:geni_app/ui/business_form.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,6 +17,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final bookProvider = Provider.of<BookProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -64,8 +68,14 @@ class _HomePageState extends State<HomePage> {
           PageView(
             controller: _pageController,
             children: [
-              buildCard(),
-              buildCard1(),
+              Column(
+                children: [
+                  for (final book in bookProvider.businessBooks) 
+                    ...[buildCard(),]
+                ],
+              ),
+              
+              //buildCard1(),
             ],
           ),
         ],
@@ -74,6 +84,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Add a new business
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => BusinessForm()));
         },
         backgroundColor: const Color(0xFF19CA79),
         icon: const Icon(Icons.add, color: Colors.white),
