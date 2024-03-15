@@ -42,7 +42,7 @@ class _VerifyState extends State<Verify> {
             content: Text('Code verified'),
           ),
         );
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else if (authProvider.verificationState == "timeout") {
         _onEditing = false;
         ScaffoldMessenger.of(context).showSnackBar(

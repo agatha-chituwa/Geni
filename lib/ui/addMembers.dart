@@ -6,7 +6,7 @@ class AddMembers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFEFE9E9),
+        backgroundColor: const Color(0xFFEFE9E9),
         body: Container(
             padding: const EdgeInsets.all(60),
             alignment: Alignment.center,

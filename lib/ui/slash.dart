@@ -25,7 +25,7 @@ class _SlashState extends State<Slash> {
     await _initializeApp();
     Navigator.pushReplacement(
         context, MaterialPageRoute(
-          builder: (context) => authProvider.isSignedIn? HomePage() : const Register()
+          builder: (context) => authProvider.isSignedIn? const HomePage() : const Register()
         ));
   }
 

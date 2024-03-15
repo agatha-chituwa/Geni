@@ -43,7 +43,7 @@ class _VerifyLoginState extends State<VerifyLogin> {
             content: Text('Code verified'),
           ),
         );
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else if (authProvider.verificationState == "timeout") {
         _onEditing = false;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -184,9 +184,9 @@ class _VerifyLoginState extends State<VerifyLogin> {
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: Color(0xFF19CA79),
+                        backgroundColor: const Color(0xFF19CA79),
                       ),
-                      child: Text(
+                      child: const Text(
                         "verify",
                         style: TextStyle(
                           fontSize: 19.0,

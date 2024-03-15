@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -13,20 +14,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _authProvider = Provider.of<AuthProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: const Text('Home'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
-              _authProvider.signOut();
+              authProvider.signOut();
             },
           ),
         ],
       ),
-      backgroundColor: Color(0xFFEFE9E9),
+      backgroundColor: const Color(0xFFEFE9E9),
       body: Stack(
         children: [
           PageView(
@@ -40,11 +41,11 @@ class _HomePageState extends State<HomePage> {
             bottom: 20,
             left: 10,
             child: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 if (_pageController.page != 0) {
                   _pageController.previousPage(
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
                 }
@@ -55,11 +56,11 @@ class _HomePageState extends State<HomePage> {
             bottom: 20,
             right: 10,
             child: IconButton(
-              icon: Icon(Icons.arrow_forward),
+              icon: const Icon(Icons.arrow_forward),
               onPressed: () {
                 if (_pageController.page != 1) {
                   _pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
                 }
@@ -79,14 +80,14 @@ class _HomePageState extends State<HomePage> {
         children: [
           Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 50.0,
               ),
               SizedBox(
                 height: 560, // Increased height to accommodate the button
                 child: Card(
                   elevation: 0.5,
-                  margin: EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                       bottom:
                           60), // Adjusted margin to make space for the button
                   child: Padding(
@@ -98,18 +99,18 @@ class _HomePageState extends State<HomePage> {
                             20), // Reduced bottom padding to make space for the button
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           "Infinity media group",
                           style: TextStyle(fontSize: 18),
                         ),
-                        SizedBox(height: 50.0),
+                        const SizedBox(height: 50.0),
                         Column(
                           children: [
-                            Row(
+                            const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 50.0),
+                                  padding: EdgeInsets.only(left: 50.0),
                                   child: Text(
                                     'book1',
                                     style: TextStyle(
@@ -120,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Spacer(),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 50.0),
+                                  padding: EdgeInsets.only(right: 50.0),
                                   child: Text(
                                     '20000',
                                     style: TextStyle(
@@ -130,14 +131,14 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 0.0),
+                            const SizedBox(height: 0.0),
                             Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.person_outline),
+                                  icon: const Icon(Icons.person_outline),
                                   onPressed: () {},
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: TextField(
                                     decoration: InputDecoration(
                                       hintText: 'Enter data...',
@@ -145,23 +146,23 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.more_vert),
+                                  icon: const Icon(Icons.more_vert),
                                   onPressed: () {},
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         Column(
                           children: [
-                            Row(
+                            const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 50.0),
+                                  padding: EdgeInsets.only(left: 50.0),
                                   child: Text(
                                     'book1',
                                     style: TextStyle(
@@ -172,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Spacer(),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 50.0),
+                                  padding: EdgeInsets.only(right: 50.0),
                                   child: Text(
                                     '20000',
                                     style: TextStyle(
@@ -182,14 +183,14 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 0.0),
+                            const SizedBox(height: 0.0),
                             Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.person_outline),
+                                  icon: const Icon(Icons.person_outline),
                                   onPressed: () {},
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: TextField(
                                     decoration: InputDecoration(
                                       hintText: 'Enter data...',
@@ -197,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.more_vert),
+                                  icon: const Icon(Icons.more_vert),
                                   onPressed: () {},
                                 ),
                               ],
@@ -211,7 +212,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 140,
             width: 120,
             child: Image(image: AssetImage('assets/images/200 px.png')),
@@ -223,10 +224,10 @@ class _HomePageState extends State<HomePage> {
                   0.4, // Adjust the width of the button here
               height: 60,
               decoration: BoxDecoration(
-                color: Color(0xFF19CA79),
+                color: const Color(0xFF19CA79),
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Center(
+              child: const Center(
                 child: Text(
                   'Add book',
                   style: TextStyle(
@@ -250,14 +251,14 @@ class _HomePageState extends State<HomePage> {
         children: [
           Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 50.0,
               ),
               SizedBox(
                 height: 560, // Increased height to accommodate the button
                 child: Card(
                   elevation: 0.5,
-                  margin: EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                       bottom:
                           60), // Adjusted margin to make space for the button
                   child: Padding(
@@ -269,18 +270,18 @@ class _HomePageState extends State<HomePage> {
                             20), // Reduced bottom padding to make space for the button
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           "Another One",
                           style: TextStyle(fontSize: 18),
                         ),
-                        SizedBox(height: 50.0),
+                        const SizedBox(height: 50.0),
                         Column(
                           children: [
-                            Row(
+                            const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 50.0),
+                                  padding: EdgeInsets.only(left: 50.0),
                                   child: Text(
                                     'book1',
                                     style: TextStyle(
@@ -291,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Spacer(),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 50.0),
+                                  padding: EdgeInsets.only(right: 50.0),
                                   child: Text(
                                     '20000',
                                     style: TextStyle(
@@ -301,14 +302,14 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 0.0),
+                            const SizedBox(height: 0.0),
                             Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.person_outline),
+                                  icon: const Icon(Icons.person_outline),
                                   onPressed: () {},
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: TextField(
                                     decoration: InputDecoration(
                                       hintText: 'Enter data...',
@@ -316,23 +317,23 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.more_vert),
+                                  icon: const Icon(Icons.more_vert),
                                   onPressed: () {},
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         Column(
                           children: [
-                            Row(
+                            const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 50.0),
+                                  padding: EdgeInsets.only(left: 50.0),
                                   child: Text(
                                     'book1',
                                     style: TextStyle(
@@ -343,7 +344,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Spacer(),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 50.0),
+                                  padding: EdgeInsets.only(right: 50.0),
                                   child: Text(
                                     '20000',
                                     style: TextStyle(
@@ -353,14 +354,14 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 0.0),
+                            const SizedBox(height: 0.0),
                             Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.person_outline),
+                                  icon: const Icon(Icons.person_outline),
                                   onPressed: () {},
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: TextField(
                                     decoration: InputDecoration(
                                       hintText: 'Enter data...',
@@ -368,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.more_vert),
+                                  icon: const Icon(Icons.more_vert),
                                   onPressed: () {},
                                 ),
                               ],
@@ -382,7 +383,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 140,
             width: 120,
             child: Image(image: AssetImage('assets/images/200 px.png')),
@@ -394,10 +395,10 @@ class _HomePageState extends State<HomePage> {
                   0.4, // Adjust the width of the button here
               height: 60,
               decoration: BoxDecoration(
-                color: Color(0xFF19CA79),
+                color: const Color(0xFF19CA79),
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Center(
+              child: const Center(
                 child: Text(
                   'Add book',
                   style: TextStyle(
