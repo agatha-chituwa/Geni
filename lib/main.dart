@@ -13,7 +13,9 @@ main() {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => BookProvider()),
-        ChangeNotifierProvider(create:(context) => UsersProvider(),)
+        ChangeNotifierProvider(
+          create: (context) => UsersProvider(),
+        )
       ],
       child: const MyApp(), // Your main app widget
     ),
