@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/business_form.dart';
-import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    final businessProvider = Provider.of<BusinessProvider>(context);
     final bookProvider = Provider.of<BookProvider>(context);
 
     return Scaffold(
@@ -221,7 +221,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Column(
                 children: [
-                  for (final book in bookProvider.businessBooks) ...[]
+                  for (final business in businessProvider.userBusinesses) ...[]
                 ],
               ),
               // ReusableCard(

@@ -14,7 +14,7 @@ class Business {
     required this.location,
     required this.createdAt,
     required this.updatedAt,
-    required this.ref,
+    this.ref,
   });
 
   factory Business.fromMap(Map<String, dynamic> data) {

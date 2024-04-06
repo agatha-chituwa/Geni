@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geni_app/model/business_model.dart';
+import 'package:geni_app/state_providers/business_provider.dart';
+import 'package:provider/provider.dart';
 
 class BusinessForm extends StatefulWidget {
   const BusinessForm({Key? key}) : super(key: key);
@@ -14,6 +17,8 @@ class _BusinessFormState extends State<BusinessForm> {
   String _businessName = "";
   int _numberOfEmployees = 0;
   String _location = "";
+
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -95,15 +100,37 @@ class _BusinessFormState extends State<BusinessForm> {
 
                               const SizedBox(height: 20),
 
-                              // Add Members Button (Consider removing if not needed)
+                              // Register Business
                               Center(
                                 child: SizedBox(
-                                  width: 120,
-                                  height: 50,
                                   child: ElevatedButton(
-                                    onPressed: null,
-                                    child: Text(
-                                        'Add Members'), // Implement functionality for adding members
+                                    
+                                    onPressed: _isLoading? null : () async {
+                                      if (_formKey.currentState?.validate() != false) {
+                                        debugPrint("Saving");
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
+                                        await Provider.of<BusinessProvider>(context, listen: false)
+                                          .addBusiness(
+                                            Business(
+                                              createdAt: DateTime.now(),
+                                              updatedAt: DateTime.now(),
+                                              name: _businessName,
+                                              location: _location,
+                                              numberOfEmployees: _numberOfEmployees,
+                                            )
+                                          );
+
+                                        
+
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      }
+                                    },
+                                    child: _isLoading? const CircularProgressIndicator() : const Text(
+                                        'Register Business'),
                                   ),
                                 ),
                               ),

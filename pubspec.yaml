@@ -37,10 +37,10 @@ dependencies:
   form_field_validator: ^1.1.0
   flutter_verification_code: ^1.1.7
   firebase_core: ^2.26.0
-  firebase_auth: ^4.17.7
+  firebase_auth: ^4.7.2
   cloud_firestore: ^4.15.7
   provider: ^6.1.2
-  firebase_app_check: ^0.2.1+18
+  firebase_app_check: ^0.2.2
 
 dev_dependencies:
   flutter_test:

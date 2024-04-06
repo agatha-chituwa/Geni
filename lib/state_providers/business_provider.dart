@@ -5,15 +5,13 @@ import 'package:geni_app/model/business_model.dart';
 import 'package:geni_app/repositories/business_repository.dart';
 
 class BusinessProvider extends ChangeNotifier {
-  final BusinessRepository _businessRepository;
+  final BusinessRepository _businessRepository = BusinessRepository();
 
   List<Business> _businesses = [];
   List<Business> get businesses => _businesses;
 
   List<BusinessMember> _userBusinesses = [];
   List<BusinessMember> get userBusinesses => _userBusinesses;
-
-  BusinessProvider(this._businessRepository);
 
   init() async {
     await _loadBusinesses();
