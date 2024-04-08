@@ -6,7 +6,7 @@ import 'package:geni_app/model/business_model.dart';
 class BusinessRepository {
   final DataModel _dataModel = DataModel();
 
-  Future<void> addBusiness(Business business) {
+  Future<void> addBusiness(Business business) async {
     business.ref = _dataModel.businessesCollection.doc();
     return business.ref!.set(business.toMap());
   }
@@ -40,5 +40,10 @@ class BusinessRepository {
     }
 
     return businessMembers;
+  }
+
+  Future<void> addUserBusiness(BusinessMember businessMember) async {
+    businessMember.ref = _dataModel.businessMembersCollection.doc();
+    await businessMember.ref!.set(businessMember.toMap());
   }
 }

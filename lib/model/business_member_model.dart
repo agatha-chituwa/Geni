@@ -8,7 +8,7 @@ class BusinessMember {
   final DocumentReference businessReference;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final DocumentReference ref;
+  DocumentReference? ref;
   User? member;
   Business? business;
 
@@ -18,7 +18,7 @@ class BusinessMember {
     required this.businessReference,
     required this.createdAt,
     required this.updatedAt,
-    required this.ref,
+    this.ref,
   });
 
   factory BusinessMember.fromMap(Map<String, dynamic> data) {

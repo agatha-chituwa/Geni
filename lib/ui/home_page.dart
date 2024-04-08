@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/business_form.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:provider/provider.dart';
 
 class ReusableCard extends StatelessWidget {
+  /// Rewrite this card it should accept a business model. 
+  /// The button text should be preset for adding new book and it should the user to the book form we talked about.
+  /// If the enter data text field is for a book entry then there should be a way of specifying expense/income.
+  /// And the list of books should be displayed inside a FutureWidget to allow loading of books and you might have
+  /// to make this a Stateful widget 
+
   final String companyName;
   final String bookName;
   final String price;
@@ -200,7 +207,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final businessProvider = Provider.of<BusinessProvider>(context);
+    final businessProvider = Provider.of<BusinessProvider>(context)..loadUserBusinesses(
+      Provider.of<AuthProvider>(context, listen: false).currentUser?.phoneNumber
+    );
     final bookProvider = Provider.of<BookProvider>(context);
 
     return Scaffold(
@@ -219,23 +228,14 @@ class _HomePageState extends State<HomePage> {
           PageView(
             controller: _pageController,
             children: [
-              Column(
-                children: [
-                  for (final business in businessProvider.userBusinesses) ...[]
+              for (final memeberBusiness in businessProvider.userBusinesses) ...[
+                    ReusableCard(
+                      companyName: memeberBusiness.business!.name, 
+                      bookName: "", 
+                      price: "", 
+                      buttonText: ""
+                    )
                 ],
-              ),
-              // ReusableCard(
-              //   companyName: "Agatha",
-              //   bookName: "book1",
-              //   price: "20000",
-              //   buttonText: "hello",
-              // ),
-              // ReusableCard(
-              //   companyName: "Pempho",
-              //   bookName: "book1",
-              //   price: "20000",
-              //   buttonText: "add book",
-              // ),
             ],
           ),
           Positioned(

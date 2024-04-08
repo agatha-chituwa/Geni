@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geni_app/model/business_model.dart';
+import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -119,14 +120,13 @@ class _BusinessFormState extends State<BusinessForm> {
                                               name: _businessName,
                                               location: _location,
                                               numberOfEmployees: _numberOfEmployees,
-                                            )
+                                            ),
+                                            Provider.of<AuthProvider>(context, listen: false).currentUser!.phoneNumber!
                                           );
-
-                                        
-
                                         setState(() {
                                           _isLoading = false;
                                         });
+                                        Navigator.of(context).pop();
                                       }
                                     },
                                     child: _isLoading? const CircularProgressIndicator() : const Text(

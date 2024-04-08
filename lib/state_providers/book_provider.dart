@@ -14,8 +14,6 @@ class BookProvider extends ChangeNotifier {
   List<Book> get books => _books;
   List<UserBook> _userBooks = [];
   List<UserBook> get userBooks => _userBooks;
-  List<BusinessBook> _businessBooks = [];
-  List<BusinessBook> get businessBooks => _businessBooks;
   List<Entry> _entries = [];
   List<Entry> get entries => _entries;
 
@@ -71,9 +69,9 @@ class BookProvider extends ChangeNotifier {
     await _bookRepository.updateBusinessBook(businessBook);
   }
 
-  Future<void> getBusinessBooks(DocumentReference businessRef) async {
-    _businessBooks = await _bookRepository.getBooksOfBusiness(businessRef);
-    notifyListeners();
+  Future<List<BusinessBook>> getBusinessBooks(DocumentReference businessRef) async {
+    final businessBooks = await _bookRepository.getBooksOfBusiness(businessRef);
+    return businessBooks;
   }
 
   Future<void> getUserBooks(DocumentReference userRef) async {
@@ -98,5 +96,4 @@ class BookProvider extends ChangeNotifier {
     notifyListeners();
     return _entries;
   }
-
 }

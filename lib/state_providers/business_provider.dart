@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
 import 'package:geni_app/model/business_model.dart';
 import 'package:geni_app/repositories/business_repository.dart';
@@ -13,8 +14,9 @@ class BusinessProvider extends ChangeNotifier {
   List<BusinessMember> _userBusinesses = [];
   List<BusinessMember> get userBusinesses => _userBusinesses;
 
-  init() async {
+  init(String? phoneNumber) async {
     await _loadBusinesses();
+    if (phoneNumber != null) loadUserBusinesses(phoneNumber);
   }
 
   Future<void> _loadBusinesses() async {
@@ -26,10 +28,19 @@ class BusinessProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addBusiness(Business business) async {
+  Future<void> addBusiness(Business business, String userPhoneNumber) async {
     try {
       await _businessRepository.addBusiness(business);
       _businesses.add(business);
+      await _businessRepository.addUserBusiness(
+        BusinessMember(
+          userReference: DataModel().usersCollection.doc(userPhoneNumber), 
+          roleReference: DataModel().rolesCollection.doc("owner"), 
+          businessReference: business.ref!, 
+          createdAt: DateTime.now(), 
+          updatedAt: DateTime.now()
+        )
+      );
       notifyListeners();
     } catch (error) {
       // Handle error
@@ -65,6 +76,16 @@ class BusinessProvider extends ChangeNotifier {
 
   Future<void> getBussinessesOf(DocumentReference userRef) async {
     _userBusinesses = await _businessRepository.getUserBusinesses(userRef);
+  }
+
+  loadUserBusinesses(String? phoneNumber) async {
+    final ref = DataModel().usersCollection.doc(phoneNumber);
+    try {
+      _userBusinesses = await _businessRepository.getUserBusinesses(ref);
+      notifyListeners();
+    } catch (error) {
+      // Handle error
+    }
   }
   
 }

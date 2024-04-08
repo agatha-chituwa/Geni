@@ -13,12 +13,12 @@ class Role {
     required this.ref,
   });
 
-  factory Role.fromMap(Map<String, dynamic> data, DocumentReference ref) {
+  factory Role.fromMap(Map<String, dynamic> data) {
     return Role(
       name: data['Name'] as String,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
-      ref: ref,
+      ref: data['ref'] as DocumentReference,
     );
   }
 

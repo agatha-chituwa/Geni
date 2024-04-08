@@ -26,7 +26,7 @@ class _SlashState extends State<Slash> {
 
   _navigateToHome() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await _initializeApp();
+    await _initializeApp(authProvider.currentUser?.phoneNumber);
     Navigator.pushReplacement(
         context, MaterialPageRoute(
           builder: (context) => authProvider.isSignedIn? const HomePage() : const Register()
@@ -51,7 +51,7 @@ class _SlashState extends State<Slash> {
     ));
   }
   
-  _initializeApp() async {
+  _initializeApp(String? phoneNumber) async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -61,6 +61,6 @@ class _SlashState extends State<Slash> {
     Provider.of<AuthProvider>(context, listen: false).initialize();
     await Provider.of<UsersProvider>(context, listen: false).init();
     await Provider.of<BookProvider>(context, listen: false).init();
-    await Provider.of<BusinessProvider>(context, listen: false).init();
+    await Provider.of<BusinessProvider>(context, listen: false).init(phoneNumber);
   }
 }
