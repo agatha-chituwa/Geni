@@ -210,7 +210,7 @@ class _HomePageState extends State<HomePage> {
     final businessProvider = Provider.of<BusinessProvider>(context)..loadUserBusinesses(
       Provider.of<AuthProvider>(context, listen: false).currentUser?.phoneNumber
     );
-    final bookProvider = Provider.of<BookProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -218,7 +218,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {},
+            onPressed: () {
+              _signOutUser(authProvider);
+            },
           ),
         ],
       ),
@@ -282,4 +284,29 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  
+  void _signOutUser(AuthProvider authProvider) async {
+  final shouldSignOut = await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Sign Out Confirmation'),
+      content: Text('Are you sure you want to sign out?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false), // Cancel
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true), // Sign Out
+          child: Text('Sign Out'),
+        ),
+      ],
+    ),
+  );
+
+  if (shouldSignOut == true) {
+    await authProvider.signOut();
+    Navigator.of(context).popUntil((route) => route.isFirst); // Alternative for Flutter navigation
+  }
+}
 }
