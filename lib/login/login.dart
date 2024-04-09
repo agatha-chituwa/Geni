@@ -157,7 +157,7 @@ class _LoginState extends State<Login> {
     setState(() {
       _isLoading = true;
     });
-    final result = await authProvider.signIn(
+    final result = await authProvider.signInWithMobile(
         mobile: "$areaCode${_mobile.text}");
     //_isLoading = false;
   }

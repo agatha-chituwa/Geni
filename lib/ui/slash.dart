@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
+import 'package:geni_app/database/data_model.dart';
+import 'package:geni_app/login/email_login.dart';
 import 'package:geni_app/login/signup.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
@@ -26,10 +29,10 @@ class _SlashState extends State<Slash> {
 
   _navigateToHome() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await _initializeApp(authProvider.currentUser?.phoneNumber);
+    await _initializeApp(authProvider.currentUser?.email == null? null : DataModel().usersCollection.doc(authProvider.currentUser?.email));
     Navigator.pushReplacement(
         context, MaterialPageRoute(
-          builder: (context) => authProvider.isSignedIn? const HomePage() : const Register()
+          builder: (context) => authProvider.isSignedIn? const HomePage() : const Login()
         ));
   }
 
@@ -51,7 +54,7 @@ class _SlashState extends State<Slash> {
     ));
   }
   
-  _initializeApp(String? phoneNumber) async {
+  _initializeApp(DocumentReference? userReference) async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -61,6 +64,6 @@ class _SlashState extends State<Slash> {
     Provider.of<AuthProvider>(context, listen: false).initialize();
     await Provider.of<UsersProvider>(context, listen: false).init();
     await Provider.of<BookProvider>(context, listen: false).init();
-    await Provider.of<BusinessProvider>(context, listen: false).init(phoneNumber);
+    await Provider.of<BusinessProvider>(context, listen: false).init(userReference);
   }
 }

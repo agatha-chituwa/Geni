@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/business_form.dart';
@@ -208,7 +209,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final businessProvider = Provider.of<BusinessProvider>(context)..loadUserBusinesses(
-      Provider.of<AuthProvider>(context, listen: false).currentUser?.phoneNumber
+      DataModel().usersCollection.doc(
+          Provider.of<AuthProvider>(context, listen: false).currentUser!.email!
+      )
     );
     final bookProvider = Provider.of<BookProvider>(context);
 

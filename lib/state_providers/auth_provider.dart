@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geni_app/database/data_model.dart';
@@ -115,42 +114,94 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  signUp({required String email, required String name, required String mobile}) async {
-  try {
-     _phoneNumber = mobile;
+  signUpWithPhone({required String email, required String name, required String mobile}) async {
+    try {
+      _phoneNumber = mobile;
       _email = email;
       _name = name;
-     return await startPhoneVerification(mobile);
-
-  } on FirebaseAuthException catch (e) {
-    debugPrint("Firebase sign up error: $e");
-    return false;
-  } catch (e) {
-    debugPrint("Unexpected sign up error: $e");
-    return false;
+      return await startPhoneVerification(mobile);
+    } on FirebaseAuthException catch (e) {
+      debugPrint("Firebase sign up error: $e");
+      return false;
+    } catch (e) {
+      debugPrint("Unexpected sign up error: $e");
+      return false;
+    }
   }
-}
 
   _checkUser() async {
     if (!(await DataModel().usersCollection.doc(_phoneNumber).get()).exists) {
       final mUser = user_model.User(
-      name: _name,
-      email: _email,
-      phone: _phoneNumber!,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-    debugPrint("User: ${_firebaseAuth.currentUser}");
-    await UserRepository().addUser(mUser);
+        name: _name,
+        email: _email,
+        phone: _phoneNumber!,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      debugPrint("User: ${_firebaseAuth.currentUser}");
+      await UserRepository().addUser(mUser);
       return true;
     } else {
       return true;
     }
   }
 
-  signIn({required String mobile}) {
+  _checkEmailUser() async {
+    if (!(await DataModel().usersCollection.doc(_email).get()).exists) {
+      final mUser = user_model.User(
+        name: _name,
+        email: _email,
+        phone: _phoneNumber ?? "",
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      debugPrint("User: ${_firebaseAuth.currentUser}");
+      await UserRepository().addUser(mUser);
+      return true;
+    } else {
+      return true;
+    }
+  }
+
+  signInWithMobile({required String mobile}) {
     _phoneNumber = mobile;
     return startPhoneVerification(mobile);
   }
 
+  signInWithEmail({required String email, required String password}) async {
+    try {
+      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      _currentUser = userCredential.user;
+      _isSignedIn = true;
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Sign in with email failed: $e");
+    }
+  }
+
+  signUpWithEmail({required String email, required String name, required String password}) async {
+    try {
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      await _firebaseAuth.currentUser?.updateDisplayName(name);
+      //_firebaseAuth.currentUser?.updatePhoneNumber(mobile);
+      _currentUser = userCredential.user;
+      _isSignedIn = true;
+
+      _email = email;
+      _name = name;
+
+      await _checkEmailUser();
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Sign up with email failed: $e");
+    }
+  }
 }
