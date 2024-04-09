@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:geni_app/login/VerifyLogin.dart';
-import 'package:geni_app/login/login.dart';
+import 'package:geni_app/login/email_login.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
+import 'package:geni_app/ui/home_page.dart';
 import 'package:provider/provider.dart';
 
 class Register extends StatefulWidget {
@@ -13,40 +13,27 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  Map userData = {};
-  final _formkey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
-  final TextEditingController _email = TextEditingController();
   final TextEditingController _name = TextEditingController();
-  final TextEditingController _mobile = TextEditingController();
-  
-  get areaCode => "+265";
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _confirmPassword = TextEditingController();
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.addListener(() { 
-      if (authProvider.verificationState == "failed") {
-        _isLoading = false;
-        try {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Verification failed'),
-            ),
-          );
-        } catch (e) {
-          debugPrint("Error: $e");
-        }
-      } else if (authProvider.verificationState == "code-sent") {
-        _isLoading = false;
-        try {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const VerifyLogin()));
-        } catch (e) {
-          debugPrint("Error: $e");
-        }
-        
+    authProvider.addListener(() {
+      if (authProvider.isSignedIn && context.mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Welcome'),
+          ),
+        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       }
     });
   }
@@ -54,11 +41,11 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Form(
-            key: _formkey,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -68,9 +55,6 @@ class _RegisterState extends State<Register> {
                     child: SizedBox(
                       width: 100,
                       height: 150,
-                      //decoration: BoxDecoration(
-                      //borderRadius: BorderRadius.circular(40),
-                      //border: Border.all(color: Colors.blueGrey)),
                       child: Image.asset('assets/images/200 px.png'),
                     ),
                   ),
@@ -80,22 +64,21 @@ class _RegisterState extends State<Register> {
                   child: TextFormField(
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter full name'),
-                      MinLengthValidator(3,
-                          errorText:
-                              'Name should be atleast 3 charater'),
+                      MinLengthValidator(3, errorText: 'Name should be at least 3 characters'),
                     ]),
                     decoration: const InputDecoration(
-                        hintText: 'Enter Full Name',
-                        labelText: 'Full Name',
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: Colors.grey,
-                        ),
-                        errorStyle: TextStyle(fontSize: 18.0),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25.0)))),
+                      hintText: 'Enter Full Name',
+                      labelText: 'Full Name',
+                      prefixIcon: Icon(
+                        Icons.person,
+                        color: Colors.grey,
+                      ),
+                      errorStyle: TextStyle(fontSize: 18.0),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      ),
+                    ),
                     controller: _name,
                     enabled: !_isLoading,
                   ),
@@ -104,22 +87,23 @@ class _RegisterState extends State<Register> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     validator: MultiValidator([
-                      RequiredValidator(errorText: 'Please enter your phone number'),
-                        PatternValidator(r'\d{9}$',
-                          errorText: 'Please enter a valid phone number'),
+                      RequiredValidator(errorText: 'Enter email address'),
+                      EmailValidator(errorText: 'Please enter a valid email address'),
                     ]),
                     decoration: const InputDecoration(
-                      hintText: 'Phone Number', // Clear hint with area code mention
-                      labelText: 'Phone',
-                      prefixIcon: Icon(Icons.phone, color: Colors.grey),
-                      prefixText: "+265 ", // Area code
+                      hintText: 'Email Address',
+                      labelText: 'Email',
+                      prefixIcon: Icon(
+                        Icons.email,
+                        color: Colors.grey,
+                      ),
+                      errorStyle: TextStyle(fontSize: 18.0),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
                       ),
                     ),
-                    keyboardType: TextInputType.phone, // Set keyboard type for phone number
-                    controller: _mobile,
+                    controller: _email,
                     enabled: !_isLoading,
                   ),
                 ),
@@ -127,66 +111,96 @@ class _RegisterState extends State<Register> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     validator: MultiValidator([
-                      RequiredValidator(errorText: 'Enter email address'),
-                      EmailValidator(errorText: 'Please correct email filled'),
+                      RequiredValidator(errorText: 'Enter password'),
+                      MinLengthValidator(6, errorText: 'Password should be at least 6 characters'),
                     ]),
+                    obscureText: true,
                     decoration: const InputDecoration(
-                        hintText: 'Email Address',
-                        labelText: 'Email',
-                        prefixIcon: Icon(
-                          Icons.email,
-                          color: Colors.grey,
-                        ),
-                        errorStyle: TextStyle(fontSize: 18.0),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25.0)))),
-                    controller: _email,
+                      hintText: 'Password',
+                      labelText: 'Password',
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                      ),
+                      errorStyle: TextStyle(fontSize: 18.0),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      ),
+                    ),
+                    controller: _password,
+                    enabled: !_isLoading,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    validator: (val) {
+                      if (val != _password.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      hintText: 'Confirm Password',
+                      labelText: 'Confirm Password',
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                      ),
+                      errorStyle: TextStyle(fontSize: 18.0),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      ),
+                    ),
+                    controller: _confirmPassword,
                     enabled: !_isLoading,
                   ),
                 ),
                 Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: SizedBox(
-                    // margin: EdgeInsets.fromLTRB(200, 20, 50, 0),
-
-                    width: MediaQuery.of(context).size.width,
-
-                    height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                    ),
                   ),
-                )),
+                ),
                 Center(
-                    child: Container(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                    width: 120,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF19CA79), // Set the button color to green
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              20.0), // Adjust the radius as needed
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: SizedBox(
+                      width: 120,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF19CA79),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
                         ),
-                      ),
-                      onPressed: () {
-                        debugPrint("Phone number: ${_mobile.text}");
-                        if (_formkey.currentState!.validate()) {
-                          _signUp();
-                        }
-                      },
-                      child: _isLoading? const Center(child: CircularProgressIndicator(),) : const Text(
-                        'sign up',
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _signUp();
+                          }
+                        },
+                        child: _isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
                       ),
                     ),
                   ),
-                )),
-                const SizedBox(height: 20,),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 Center(
                   child: GestureDetector(
                     onTap: () {
@@ -197,38 +211,29 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.blue,
-                        decoration: TextDecoration.underline, // Add underline decoration
+                        decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
                 ),
               ],
-            )),
+            ),
+          ),
+        ),
       ),
-    ));
+    );
   }
-  
+
   Future<void> _signUp() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
-    final result = await authProvider.signUp(
-        email: _email.text,
-        name: _name.text,
-        mobile: "$areaCode${_mobile.text}");
+    final result = await authProvider.signUpWithEmail(
+      email: _email.text,
+      name: _name.text,
+      password: _password.text,
+    );
     //_isLoading = false;
-
-    // if (!context.mounted) return;
-
-    // if (result) {
-    //   Navigator.pushReplacementNamed(context, '/home');
-    // } else {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Sign up failed'),
-    //     ),
-    //   );
-    // }
   }
 }
