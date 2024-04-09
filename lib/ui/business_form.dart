@@ -27,7 +27,7 @@ class _BusinessFormState extends State<BusinessForm> {
       appBar: AppBar(
         title: const Text('Business Form'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
