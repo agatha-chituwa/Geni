@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/business_model.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
@@ -27,7 +28,7 @@ class _BusinessFormState extends State<BusinessForm> {
       appBar: AppBar(
         title: const Text('Business Form'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -130,11 +131,14 @@ class _BusinessFormState extends State<BusinessForm> {
                                                         numberOfEmployees:
                                                             _numberOfEmployees,
                                                       ),
-                                                      Provider.of<AuthProvider>(
-                                                              context,
-                                                              listen: false)
-                                                          .currentUser!
-                                                          .phoneNumber!);
+                                                      DataModel()
+                                                          .usersCollection
+                                                          .doc(Provider.of<
+                                                                      AuthProvider>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .currentUser!
+                                                              .email!));
                                               setState(() {
                                                 _isLoading = false;
                                               });

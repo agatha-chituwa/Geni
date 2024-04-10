@@ -14,9 +14,9 @@ class BusinessProvider extends ChangeNotifier {
   List<BusinessMember> _userBusinesses = [];
   List<BusinessMember> get userBusinesses => _userBusinesses;
 
-  init(String? phoneNumber) async {
+  init(DocumentReference? userReference) async {
     await _loadBusinesses();
-    if (phoneNumber != null) loadUserBusinesses(phoneNumber);
+    if (userReference != null) loadUserBusinesses(userReference);
   }
 
   Future<void> _loadBusinesses() async {
@@ -28,13 +28,13 @@ class BusinessProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addBusiness(Business business, String userPhoneNumber) async {
+  Future<void> addBusiness(Business business, DocumentReference userReference) async {
     try {
       await _businessRepository.addBusiness(business);
       _businesses.add(business);
       await _businessRepository.addUserBusiness(
         BusinessMember(
-          userReference: DataModel().usersCollection.doc(userPhoneNumber), 
+          userReference: userReference, 
           roleReference: DataModel().rolesCollection.doc("owner"), 
           businessReference: business.ref!, 
           createdAt: DateTime.now(), 
@@ -78,10 +78,9 @@ class BusinessProvider extends ChangeNotifier {
     _userBusinesses = await _businessRepository.getUserBusinesses(userRef);
   }
 
-  loadUserBusinesses(String? phoneNumber) async {
-    final ref = DataModel().usersCollection.doc(phoneNumber);
+  loadUserBusinesses(DocumentReference userReference) async {
     try {
-      _userBusinesses = await _businessRepository.getUserBusinesses(ref);
+      _userBusinesses = await _businessRepository.getUserBusinesses(userReference);
       notifyListeners();
     } catch (error) {
       // Handle error

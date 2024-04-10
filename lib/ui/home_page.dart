@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/business_form.dart';
-import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:provider/provider.dart';
 
 class ReusableCard extends StatelessWidget {
@@ -71,7 +71,7 @@ class ReusableCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 50.0),
                                   child: Text(
@@ -90,9 +90,9 @@ class ReusableCard extends StatelessWidget {
                                   icon: const Icon(Icons.person_outline),
                                   onPressed: () {},
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: TextField(
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       hintText: 'Enter data...',
                                     ),
                                   ),
@@ -123,7 +123,7 @@ class ReusableCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 50.0),
                                   child: Text(
@@ -142,9 +142,9 @@ class ReusableCard extends StatelessWidget {
                                   icon: const Icon(Icons.person_outline),
                                   onPressed: () {},
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: TextField(
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       hintText: 'Enter data...',
                                     ),
                                   ),
@@ -208,7 +208,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final businessProvider = Provider.of<BusinessProvider>(context)..loadUserBusinesses(
-      Provider.of<AuthProvider>(context, listen: false).currentUser?.phoneNumber
+      DataModel().usersCollection.doc(
+          Provider.of<AuthProvider>(context, listen: false).currentUser!.email!
+      )
     );
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
@@ -276,7 +278,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           // Add a new business
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => BusinessForm()));
+              .push(MaterialPageRoute(builder: (context) => const BusinessForm()));
         },
         backgroundColor: const Color(0xFF19CA79),
         icon: const Icon(Icons.add, color: Colors.white),
@@ -290,15 +292,15 @@ class _HomePageState extends State<HomePage> {
     context: context,
     builder: (context) => AlertDialog(
       title: const Text('Sign Out Confirmation'),
-      content: Text('Are you sure you want to sign out?'),
+      content: const Text('Are you sure you want to sign out?'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false), // Cancel
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true), // Sign Out
-          child: Text('Sign Out'),
+          child: const Text('Sign Out'),
         ),
       ],
     ),
