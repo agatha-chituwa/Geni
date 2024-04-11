@@ -14,7 +14,7 @@ class BusinessBook {
     required this.bookReference,
     required this.createdAt,
     required this.updatedAt,
-    required this.ref,
+    this.ref,
   });
 
   factory BusinessBook.fromMap(Map<String, dynamic> data) {

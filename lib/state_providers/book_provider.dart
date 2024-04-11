@@ -26,9 +26,17 @@ class BookProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addBook(Book book) async {
+  Future<void> addBookofBusiness(Book book, DocumentReference businessReference) async {
     await _bookRepository.addBook(book);
-    await getBooks();
+    await addBusinessBook(
+      BusinessBook(
+        businessReference: businessReference, 
+        bookReference: book.ref!, 
+        createdAt: DateTime.now(), 
+        updatedAt: DateTime.now(), 
+      )
+    );
+    notifyListeners();
   }
 
   Future<void> updateBook(Book book) async {
