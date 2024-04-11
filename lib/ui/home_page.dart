@@ -9,7 +9,7 @@ import 'package:geni_app/ui/business_form.dart';
 import 'package:provider/provider.dart';
 
 class ReusableCard extends StatefulWidget {
-  /// Rewrite this card it should accept a business model. i think this is done
+  /// Rewrite this card it should accept a business model.
   /// The button text should be preset for adding new book and it should the user to the book form we talked about.
   /// If the enter data text field is for a book entry then there should be a way of specifying expense/income.
   /// And the list of books should be displayed inside a FutureWidget to allow loading of books and you might have
@@ -100,9 +100,40 @@ class _ReusableCardState extends State<ReusableCard> {
                                     ),
                                   ),
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.more_vert),
-                                  onPressed: () {},
+                                PopupMenuButton<String>(
+                                  onSelected: (value) {
+                                    // Implement actions based on the selected option
+                                    switch (value) {
+                                      case 'rename':
+                                        // Handle rename action
+                                        break;
+                                      case 'add_expenses':
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => NewBook()),
+                                        );
+                                        break;
+                                      case 'delete':
+                                        // Handle delete action
+                                        break;
+                                    }
+                                  },
+                                  itemBuilder: (BuildContext context) =>
+                                      <PopupMenuEntry<String>>[
+                                    const PopupMenuItem<String>(
+                                      value: 'rename',
+                                      child: Text('Rename'),
+                                    ),
+                                    const PopupMenuItem<String>(
+                                      value: 'add_expenses',
+                                      child: Text('Add Expenses'),
+                                    ),
+                                    const PopupMenuItem<String>(
+                                      value: 'delete',
+                                      child: Text('Delete'),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
