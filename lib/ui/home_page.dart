@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/database/data_model.dart';
+import 'package:geni_app/model/business_member_model.dart';
+import 'package:geni_app/model/business_model.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
+import 'package:geni_app/ui/book_form.dart';
 import 'package:geni_app/ui/business_form.dart';
 import 'package:provider/provider.dart';
 
-class ReusableCard extends StatelessWidget {
-  /// Rewrite this card it should accept a business model. 
+class ReusableCard extends StatefulWidget {
+  /// Rewrite this card it should accept a business model. i think this is done
   /// The button text should be preset for adding new book and it should the user to the book form we talked about.
   /// If the enter data text field is for a book entry then there should be a way of specifying expense/income.
   /// And the list of books should be displayed inside a FutureWidget to allow loading of books and you might have
-  /// to make this a Stateful widget 
+  /// to make this a Stateful widget
 
-  final String companyName;
-  final String bookName;
-  final String price;
-  final String buttonText; // New parameter for button text
+  final BusinessMember business;
 
   const ReusableCard({
     Key? key,
-    required this.companyName,
-    required this.bookName,
-    required this.price,
-    required this.buttonText, // Initialize button text
+    required this.business,
   }) : super(key: key);
 
+  @override
+  State<ReusableCard> createState() => _ReusableCardState();
+}
+
+class _ReusableCardState extends State<ReusableCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,7 +54,7 @@ class ReusableCard extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          companyName,
+                          widget.business.business!.name,
                           style: const TextStyle(fontSize: 18),
                         ),
                         const SizedBox(height: 50.0),
@@ -64,7 +66,7 @@ class ReusableCard extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 50.0),
                                   child: Text(
-                                    bookName,
+                                    " bookName",
                                     style: const TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
@@ -75,7 +77,7 @@ class ReusableCard extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 50.0),
                                   child: Text(
-                                    price,
+                                    "price",
                                     style: const TextStyle(
                                       fontSize: 16.0,
                                     ),
@@ -91,9 +93,10 @@ class ReusableCard extends StatelessWidget {
                                   onPressed: () {},
                                 ),
                                 const Expanded(
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter data...',
+                                  child: Text(
+                                    "price hello nbgfkfytfri ",
+                                    style: const TextStyle(
+                                      fontSize: 16.0,
                                     ),
                                   ),
                                 ),
@@ -107,55 +110,6 @@ class ReusableCard extends StatelessWidget {
                         ),
                         const SizedBox(
                           height: 30,
-                        ),
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 50.0),
-                                  child: Text(
-                                    bookName,
-                                    style: const TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 50.0),
-                                  child: Text(
-                                    price,
-                                    style: const TextStyle(
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 0.0),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.person_outline),
-                                  onPressed: () {},
-                                ),
-                                const Expanded(
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter data...',
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.more_vert),
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
-                          ],
                         ),
                       ],
                     ),
@@ -179,11 +133,18 @@ class ReusableCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Center(
-                child: Text(
-                  buttonText, // Use the provided button text
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => NewBook(),
+                    ));
+                  },
+                  child: Text(
+                    "Add New Book", // Use the provided button text
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
               ),
@@ -207,11 +168,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final businessProvider = Provider.of<BusinessProvider>(context)..loadUserBusinesses(
-      DataModel().usersCollection.doc(
-          Provider.of<AuthProvider>(context, listen: false).currentUser!.email!
-      )
-    );
+    final businessProvider = Provider.of<BusinessProvider>(context)
+      ..loadUserBusinesses(DataModel().usersCollection.doc(
+          Provider.of<AuthProvider>(context, listen: false)
+              .currentUser!
+              .email!));
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
@@ -232,14 +193,10 @@ class _HomePageState extends State<HomePage> {
           PageView(
             controller: _pageController,
             children: [
-              for (final memeberBusiness in businessProvider.userBusinesses) ...[
-                    ReusableCard(
-                      companyName: memeberBusiness.business!.name, 
-                      bookName: "", 
-                      price: "", 
-                      buttonText: ""
-                    )
-                ],
+              for (final business in businessProvider.userBusinesses)
+                ReusableCard(
+                  business: business,
+                ),
             ],
           ),
           Positioned(
@@ -277,8 +234,9 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Add a new business
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => const BusinessForm()));
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const BusinessForm()),
+          );
         },
         backgroundColor: const Color(0xFF19CA79),
         icon: const Icon(Icons.add, color: Colors.white),
@@ -286,29 +244,30 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-  
-  void _signOutUser(AuthProvider authProvider) async {
-  final shouldSignOut = await showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Sign Out Confirmation'),
-      content: const Text('Are you sure you want to sign out?'),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false), // Cancel
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, true), // Sign Out
-          child: const Text('Sign Out'),
-        ),
-      ],
-    ),
-  );
 
-  if (shouldSignOut == true) {
-    await authProvider.signOut();
-    Navigator.of(context).popUntil((route) => route.isFirst); // Alternative for Flutter navigation
+  void _signOutUser(AuthProvider authProvider) async {
+    final shouldSignOut = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Sign Out Confirmation'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // Cancel
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true), // Sign Out
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldSignOut == true) {
+      await authProvider.signOut();
+      Navigator.of(context).popUntil(
+          (route) => route.isFirst); // Alternative for Flutter navigation
+    }
   }
-}
 }
