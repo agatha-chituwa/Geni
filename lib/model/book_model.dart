@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Book {
-  final String name;
-  final String description;
+  String name;
+  String description;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  DateTime updatedAt;
   DocumentReference? ref;
+  double balance = 0.0;
 
   Book({
     required this.name,
     required this.description,
     required this.createdAt,
     required this.updatedAt,
-    required this.ref,
+    this.balance = 0.0,
+    this.ref,
   });
 
   factory Book.fromMap(Map<String, dynamic> data) {
@@ -21,6 +23,7 @@ class Book {
       description: data['Description'] as String,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
+      balance: data['Balance'] as double,
       ref: data['ref'] as DocumentReference?,
     );
   }
@@ -31,6 +34,7 @@ class Book {
       'Description': description,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
+      'Balance': balance,
       'ref': ref,
     };
   }

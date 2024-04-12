@@ -1,32 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geni_app/database/data_model.dart';
+import 'package:geni_app/model/book_model.dart';
+import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
 import 'package:geni_app/model/business_model.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
+import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/book_form.dart';
 import 'package:geni_app/ui/business_form.dart';
 import 'package:provider/provider.dart';
 
-class ReusableCard extends StatefulWidget {
-  /// Rewrite this card it should accept a business model.
-  /// The button text should be preset for adding new book and it should the user to the book form we talked about.
-  /// If the enter data text field is for a book entry then there should be a way of specifying expense/income.
-  /// And the list of books should be displayed inside a FutureWidget to allow loading of books and you might have
-  /// to make this a Stateful widget
-
+class BusinessCard extends StatefulWidget {
   final BusinessMember business;
 
-  const ReusableCard({
+  const BusinessCard({
     Key? key,
     required this.business,
   }) : super(key: key);
 
   @override
-  State<ReusableCard> createState() => _ReusableCardState();
+  State<BusinessCard> createState() => _BusinessCardState();
 }
 
-class _ReusableCardState extends State<ReusableCard> {
+class _BusinessCardState extends State<BusinessCard> {
+  late Future<List<BusinessBook>> booksFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    booksFuture = getBooks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,6 +47,7 @@ class _ReusableCardState extends State<ReusableCard> {
                 height: 50.0,
               ),
               SizedBox(
+                width: double.infinity,
                 height: 560,
                 child: Card(
                   elevation: 0.5,
@@ -58,87 +66,27 @@ class _ReusableCardState extends State<ReusableCard> {
                           style: const TextStyle(fontSize: 18),
                         ),
                         const SizedBox(height: 50.0),
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 50.0),
-                                  child: Text(
-                                    " bookName",
-                                    style: const TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 50.0),
-                                  child: Text(
-                                    "price",
-                                    style: const TextStyle(
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 0.0),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.person_outline),
-                                  onPressed: () {},
-                                ),
-                                const Expanded(
-                                  child: Text(
-                                    "price hello nbgfkfytfri ",
-                                    style: const TextStyle(
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
-                                PopupMenuButton<String>(
-                                  onSelected: (value) {
-                                    // Implement actions based on the selected option
-                                    switch (value) {
-                                      case 'rename':
-                                        // Handle rename action
-                                        break;
-                                      case 'add_expenses':
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => NewBook()),
-                                        );
-                                        break;
-                                      case 'delete':
-                                        // Handle delete action
-                                        break;
-                                    }
-                                  },
-                                  itemBuilder: (BuildContext context) =>
-                                      <PopupMenuEntry<String>>[
-                                    const PopupMenuItem<String>(
-                                      value: 'rename',
-                                      child: Text('Rename'),
-                                    ),
-                                    const PopupMenuItem<String>(
-                                      value: 'add_expenses',
-                                      child: Text('Add Expenses'),
-                                    ),
-                                    const PopupMenuItem<String>(
-                                      value: 'delete',
-                                      child: Text('Delete'),
-                                    ),
+                        FutureBuilder(
+                            future: booksFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (snapshot.hasError) {
+                                return const Center(
+                                  child: Text('Error'),
+                                );
+                              } else {
+                                return Column(
+                                  children: [
+                                    for (final book in snapshot.data!)
+                                      _buildBookEntry(book)
                                   ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                                ); 
+                              }
+                            }),
                         const SizedBox(
                           height: 30,
                         ),
@@ -167,12 +115,12 @@ class _ReusableCardState extends State<ReusableCard> {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => NewBook(),
-                    ));
+                      builder: (context) => NewBook(business: widget.business.business,),
+                    )).then((value) => booksFuture = getBooks());
                   },
-                  child: Text(
+                  child: const Text(
                     "Add New Book", // Use the provided button text
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                     ),
@@ -183,6 +131,95 @@ class _ReusableCardState extends State<ReusableCard> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<List<BusinessBook>> getBooks() {
+    return Provider.of<BookProvider>(context, listen: false)
+        .getBusinessBooks(widget.business.businessReference);
+  }
+
+  _buildBookEntry(BusinessBook book) {
+    return Column(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 50.0),
+              child: Text(
+                book.book?.name ?? "Unknown",
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(right: 50.0),
+              child: Text(
+                '${book.book?.balance}',
+                style: const TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 0.0),
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.person_outline),
+              onPressed: () {},
+            ),
+            Expanded(
+              child: Text(
+                book.book?.description ?? "Book Description",
+                style: const TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                // Implement actions based on the selected option
+                switch (value) {
+                  case 'edit':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NewBook(
+                        business: widget.business.business, book: book.book,
+                      )),
+                    ).then((value) => booksFuture = getBooks());
+                    break;
+                  case 'add_cash_in':
+                    //
+                    break;
+                  case 'add_cash_out':
+                    // Handle delete action
+                    break;
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Text('Edit'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'add_cash_in',
+                  child: Text('Add Cash In'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'add_cash_out',
+                  child: Text('Add Cash Out'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -225,7 +262,7 @@ class _HomePageState extends State<HomePage> {
             controller: _pageController,
             children: [
               for (final business in businessProvider.userBusinesses)
-                ReusableCard(
+                BusinessCard(
                   business: business,
                 ),
             ],

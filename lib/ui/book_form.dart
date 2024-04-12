@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:geni_app/model/book_model.dart';
+import 'package:geni_app/model/business_model.dart';
+import 'package:geni_app/state_providers/book_provider.dart';
+import 'package:provider/provider.dart';
 
 class NewBook extends StatefulWidget {
-  const NewBook({super.key});
+  final Business? business;
+  final Book? book;
+
+  const NewBook({super.key, this.business, this.book});
 
   @override
   State<NewBook> createState() => _NewBookState();
@@ -9,9 +16,16 @@ class NewBook extends StatefulWidget {
 
 class _NewBookState extends State<NewBook> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _descriptionController;
+  bool _loading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.book?.name);
+    _descriptionController = TextEditingController(text: widget.book?.description ?? '');
+  }
   @override
   void dispose() {
     _nameController.dispose();
@@ -23,12 +37,12 @@ class _NewBookState extends State<NewBook> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Book'),
+        title: Text('${widget.book == null? 'New' : 'Update'} ${widget.business?.name} Book'),
       ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
+          child: _loading? const CircularProgressIndicator() : Form(
             key: _formKey,
             child: Column(
               children: [
@@ -72,16 +86,34 @@ class _NewBookState extends State<NewBook> {
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       String name = _nameController.text;
                       String description = _descriptionController.text;
-
-                      // Handle form submission logic here
-
-                      _formKey.currentState!.reset();
-                      _nameController.text = '';
-                      _descriptionController.text = '';
+                      setState(() {
+                        _loading = true;
+                      });
+                      if (widget.book == null) {
+                        await Provider.of<BookProvider>(context, listen: false).addBookofBusiness(
+                          Book(name: name, description: description, createdAt: DateTime.now(), updatedAt: DateTime.now()),
+                          widget.business!.ref!
+                        );
+                      } else {
+                        final book = widget.book!;
+                        book.name = name;
+                        book.description = description;
+                        book.updatedAt = DateTime.now();
+                        await Provider.of<BookProvider>(context, listen: false).updateBook(
+                          book,
+                        );
+                      }
+                      
+                      setState(() {
+                        _loading = false;
+                      });
+                      
+                      if (context.mounted)
+                        Navigator.pop(context);
                     }
                   },
                   child: const Text('Submit'),

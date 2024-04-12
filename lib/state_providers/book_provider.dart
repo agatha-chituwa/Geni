@@ -41,12 +41,12 @@ class BookProvider extends ChangeNotifier {
 
   Future<void> updateBook(Book book) async {
     await _bookRepository.updateBook(book);
-    await getBooks();
+    notifyListeners();
   }
 
   Future<void> deleteBook(Book book) async {
     await _bookRepository.deleteBook(book);
-    await getBooks();
+    notifyListeners();
   }
 
   Future<Book> getBookById(String id) async {
