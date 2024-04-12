@@ -29,11 +29,14 @@ class _SlashState extends State<Slash> {
 
   _navigateToHome() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await _initializeApp(authProvider.currentUser?.email == null? null : DataModel().usersCollection.doc(authProvider.currentUser?.email));
+    await _initializeApp(authProvider.currentUser?.email == null
+        ? null
+        : DataModel().usersCollection.doc(authProvider.currentUser?.email));
     Navigator.pushReplacement(
-        context, MaterialPageRoute(
-          builder: (context) => authProvider.isSignedIn? const HomePage() : const Login()
-        ));
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                authProvider.isSignedIn ? const HomePage() : const Login()));
   }
 
   @override
@@ -53,7 +56,7 @@ class _SlashState extends State<Slash> {
       ),
     ));
   }
-  
+
   _initializeApp(DocumentReference? userReference) async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -64,6 +67,7 @@ class _SlashState extends State<Slash> {
     Provider.of<AuthProvider>(context, listen: false).initialize();
     await Provider.of<UsersProvider>(context, listen: false).init();
     await Provider.of<BookProvider>(context, listen: false).init();
-    await Provider.of<BusinessProvider>(context, listen: false).init(userReference);
+    await Provider.of<BusinessProvider>(context, listen: false)
+        .init(userReference);
   }
 }

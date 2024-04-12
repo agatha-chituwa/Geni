@@ -28,7 +28,7 @@ class _BusinessFormState extends State<BusinessForm> {
       appBar: AppBar(
         title: const Text('Business Form'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -106,34 +106,48 @@ class _BusinessFormState extends State<BusinessForm> {
                               Center(
                                 child: SizedBox(
                                   child: ElevatedButton(
-                                    
-                                    onPressed: _isLoading? null : () async {
-                                      if (_formKey.currentState?.validate() != false) {
-                                        debugPrint("Saving");
-                                        setState(() {
-                                          _isLoading = true;
-                                        });
-                                        await Provider.of<BusinessProvider>(context, listen: false)
-                                          .addBusiness(
-                                            Business(
-                                              createdAt: DateTime.now(),
-                                              updatedAt: DateTime.now(),
-                                              name: _businessName,
-                                              location: _location,
-                                              numberOfEmployees: _numberOfEmployees,
-                                            ),
-                                            DataModel().usersCollection.doc(
-                                              Provider.of<AuthProvider>(context, listen: false).currentUser!.email!
-                                            )
-                                          );
-                                        setState(() {
-                                          _isLoading = false;
-                                        });
-                                        Navigator.of(context).pop();
-                                      }
-                                    },
-                                    child: _isLoading? const CircularProgressIndicator() : const Text(
-                                        'Register Business'),
+                                    onPressed: _isLoading
+                                        ? null
+                                        : () async {
+                                            if (_formKey.currentState
+                                                    ?.validate() !=
+                                                false) {
+                                              debugPrint("Saving");
+                                              setState(() {
+                                                _isLoading = true;
+                                              });
+                                              await Provider.of<
+                                                          BusinessProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .addBusiness(
+                                                      Business(
+                                                        createdAt:
+                                                            DateTime.now(),
+                                                        updatedAt:
+                                                            DateTime.now(),
+                                                        name: _businessName,
+                                                        location: _location,
+                                                        numberOfEmployees:
+                                                            _numberOfEmployees,
+                                                      ),
+                                                      DataModel()
+                                                          .usersCollection
+                                                          .doc(Provider.of<
+                                                                      AuthProvider>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .currentUser!
+                                                              .email!));
+                                              setState(() {
+                                                _isLoading = false;
+                                              });
+                                              Navigator.of(context).pop();
+                                            }
+                                          },
+                                    child: _isLoading
+                                        ? const CircularProgressIndicator()
+                                        : const Text('Register Business'),
                                   ),
                                 ),
                               ),
