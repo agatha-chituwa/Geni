@@ -7,6 +7,7 @@ import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/book_form.dart';
 import 'package:geni_app/ui/business_form.dart';
+import 'package:geni_app/ui/entry_form.dart';
 import 'package:provider/provider.dart';
 
 class BusinessCard extends StatefulWidget {
@@ -192,10 +193,20 @@ class _BusinessCardState extends State<BusinessCard> {
                     ).then((value) => booksFuture = getBooks());
                     break;
                   case 'add_cash_in':
-                    //
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EntryForm(
+                        book: book.book!, isCashIn: true,
+                      )),
+                    ).then((value) => booksFuture = getBooks());
                     break;
                   case 'add_cash_out':
-                    // Handle delete action
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EntryForm(
+                        book: book.book!, isCashIn: false,
+                      )),
+                    ).then((value) => booksFuture = getBooks());
                     break;
                 }
               },

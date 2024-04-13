@@ -7,6 +7,7 @@ class Entry {
   final DocumentReference paymentModeRef;  // Reference to the PaymentMode document
   final DateTime createdAt;
   final DateTime updatedAt;
+  final bool isCashIn;
   DocumentReference? ref; // Reference to the Entry document
 
   Entry({
@@ -14,9 +15,10 @@ class Entry {
     required this.description,
     required this.bookMemberRef,
     required this.paymentModeRef,
+    required this.isCashIn,
     required this.createdAt,
     required this.updatedAt,
-    required this.ref,
+    this.ref,
   });
 
   factory Entry.fromMap(Map<String, dynamic> data) {
@@ -25,6 +27,7 @@ class Entry {
       description: data['Description'] as String,
       bookMemberRef: data['bookMemberRef'] as DocumentReference,
       paymentModeRef: data['paymentModeRef'] as DocumentReference,
+      isCashIn: data['isCashIn'] as bool,
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
       ref: data['ref'] as DocumentReference,
@@ -37,6 +40,7 @@ class Entry {
       'Description': description,
       'bookMemberRef': bookMemberRef,
       'paymentModeRef': paymentModeRef,
+      'isCashIn': isCashIn,
       'Created_at': createdAt,
       'Updated_at': updatedAt,
       'ref': ref,
