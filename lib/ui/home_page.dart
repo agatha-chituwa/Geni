@@ -266,7 +266,11 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: const Color(0xFFEFE9E9),
       body: Stack(
         children: [
-          PageView(
+          if (businessProvider.isLoading && businessProvider.userBusinesses.isEmpty) const CircularProgressIndicator(),
+          if (!businessProvider.isLoading && businessProvider.userBusinesses.isEmpty)
+            const Text("You don not have any business.\n Click + Business to register a business"),
+          if (businessProvider.userBusinesses.isNotEmpty) ...[
+            PageView(
             controller: _pageController,
             children: [
               for (final business in businessProvider.userBusinesses)
@@ -305,6 +309,8 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
+
+          ]  
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(

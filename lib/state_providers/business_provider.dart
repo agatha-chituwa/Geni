@@ -9,6 +9,8 @@ class BusinessProvider extends ChangeNotifier {
   final BusinessRepository _businessRepository = BusinessRepository();
 
   List<Business> _businesses = [];
+
+  bool isLoading = false;
   List<Business> get businesses => _businesses;
 
   List<BusinessMember> _userBusinesses = [];
@@ -80,7 +82,10 @@ class BusinessProvider extends ChangeNotifier {
 
   loadUserBusinesses(DocumentReference userReference) async {
     try {
+      isLoading = true;
+      //notifyListeners();
       _userBusinesses = await _businessRepository.getUserBusinesses(userReference);
+      isLoading = false;
       notifyListeners();
     } catch (error) {
       // Handle error

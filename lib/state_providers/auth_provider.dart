@@ -177,8 +177,10 @@ class AuthProvider with ChangeNotifier {
       _currentUser = userCredential.user;
       _isSignedIn = true;
       notifyListeners();
+      return true;
     } catch (e) {
       debugPrint("Sign in with email failed: $e");
+      return false;
     }
   }
 
