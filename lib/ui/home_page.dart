@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geni_app/database/data_model.dart';
-import 'package:geni_app/model/book_model.dart';
 import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
-import 'package:geni_app/model/business_model.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';

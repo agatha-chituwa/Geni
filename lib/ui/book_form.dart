@@ -112,16 +112,17 @@ class _NewBookState extends State<NewBook> {
                         _loading = false;
                       });
                       
-                      if (context.mounted)
+                      if (context.mounted) {
                         Navigator.pop(context);
+                      }
                     }
                   },
-                  child: const Text('Submit'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
                         Colors.green, // Set button background color
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   ),
+                  child: const Text('Submit'),
                 ),
               ],
             ),

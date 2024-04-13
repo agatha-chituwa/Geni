@@ -3,7 +3,6 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/login/email_login.dart';
-import 'package:geni_app/login/signup.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/state_providers/users_provider.dart';
