@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/login/email_login.dart';
 import 'package:geni_app/model/business_book_model.dart';
@@ -10,6 +11,7 @@ import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/book_form.dart';
 import 'package:geni_app/ui/business_form.dart';
 import 'package:geni_app/ui/entry_form.dart';
+import 'package:geni_app/ui/financial_book_page.dart';
 import 'package:provider/provider.dart';
 
 class BusinessCard extends StatefulWidget {
@@ -154,102 +156,112 @@ class _BusinessCardState extends State<BusinessCard> {
   }
 
   _buildBookEntry(BusinessBook book) {
-    return Column(
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => FinancialBookPage(
+            book: book.book!,
+          ),
+        ));
+      },
+      child: ListTile(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 50.0),
+            SizedBox(
               child: Text(
                 book.book?.name ?? "Unknown",
                 style: const TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(right: 50.0),
-              child: Text(
-                '${book.book?.balance}',
-                style: const TextStyle(
-                  fontSize: 16.0,
-                ),
+            Text(
+              '${book.book?.balance}',
+              style: const TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w600,
+                color: Colors.deepOrangeAccent
               ),
             ),
           ],
         ),
-        const SizedBox(height: 0.0),
-        Row(
+        leading: const Icon(Icons.book_outlined),
+        subtitle: Row(
           children: [
-            IconButton(
-              icon: const Icon(Icons.book_outlined),
-              onPressed: () {},
-            ),
             Expanded(
               child: Text(
                 book.book?.description ?? "Book Description",
                 style: const TextStyle(
                   fontSize: 16.0,
                 ),
+                maxLines: 1,
               ),
-            ),
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                // Implement actions based on the selected option
-                switch (value) {
-                  case 'edit':
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewBook(
-                                business: widget.business.business,
-                                book: book.book,
-                              )),
-                    ).then((value) => booksFuture = getBooks());
-                    break;
-                  case 'add_cash_in':
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EntryForm(
-                                book: book.book!,
-                                isCashIn: true,
-                              )),
-                    ).then((value) => booksFuture = getBooks());
-                    break;
-                  case 'add_cash_out':
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EntryForm(
-                                book: book.book!,
-                                isCashIn: false,
-                              )),
-                    ).then((value) => booksFuture = getBooks());
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  value: 'edit',
-                  child: Text('Edit'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'add_cash_in',
-                  child: Text('Add Cash In', style: TextStyle(color: Colors.green),),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'add_cash_out',
-                  child: Text('Add Cash Out', style: TextStyle(color: Colors.red),),
-                ),
-              ],
             ),
           ],
         ),
-      ],
+        trailing: PopupMenuButton<String>(
+          onSelected: (value) {
+            // Implement actions based on the selected option
+            switch (value) {
+              case 'edit':
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewBook(
+                      business: widget.business.business,
+                      book: book.book,
+                    ),
+                  ),
+                ).then((value) => booksFuture = getBooks());
+                break;
+              case 'add_cash_in':
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EntryForm(
+                      book: book.book!,
+                      isCashIn: true,
+                    ),
+                  ),
+                ).then((value) => booksFuture = getBooks());
+                break;
+              case 'add_cash_out':
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EntryForm(
+                      book: book.book!,
+                      isCashIn: false,
+                    ),
+                  ),
+                ).then((value) => booksFuture = getBooks());
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+            const PopupMenuItem<String>(
+              value: 'edit',
+              child: Text('Edit'),
+            ),
+            const PopupMenuItem<String>(
+              value: 'add_cash_in',
+              child: Text(
+                'Add Cash In',
+                style: TextStyle(color: Colors.green),
+              ),
+            ),
+            const PopupMenuItem<String>(
+              value: 'add_cash_out',
+              child: Text(
+                'Add Cash Out',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -311,8 +323,8 @@ class _HomePageState extends State<HomePage> {
             ExpansionTile(
               title: Text(
                 'Businesses',
-                style: TextStyle(fontWeight: FontWeight.bold) ,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               children: [
                 for (final business in businessProvider.userBusinesses)
                   ListTile(
@@ -327,10 +339,11 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             const ExpansionTile(
-              title: Text('Books', style: TextStyle(fontWeight: FontWeight.bold),),
-              children: [
-                
-              ],
+              title: Text(
+                'Books',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              children: [],
             ),
           ],
         ),
@@ -346,7 +359,7 @@ class _HomePageState extends State<HomePage> {
                 "You don not have any business.\n Click + Business to register a business"),
           if (businessProvider.userBusinesses.isNotEmpty) ...[
             BusinessCard(
-                business: _business ?? businessProvider.userBusinesses.first,
+              business: _business ?? businessProvider.userBusinesses.first,
             ),
           ]
         ],
@@ -386,9 +399,9 @@ class _HomePageState extends State<HomePage> {
 
     if (shouldSignOut == true) {
       await authProvider.signOut();
-      Navigator.of(context).popUntil(
-          (route) => route.isFirst); 
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Login()));
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Login()));
     }
   }
 }

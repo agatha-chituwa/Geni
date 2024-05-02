@@ -105,6 +105,7 @@ class BookProvider extends ChangeNotifier {
   Future<List<Entry>> getEntriesOfBook(DocumentReference bookRef) async {
     _entries = await _bookRepository.getEntriesOfBook(bookRef);
     notifyListeners();
+    debugPrint('Fetched entries ${_entries.length}');
     return _entries;
   }
 }

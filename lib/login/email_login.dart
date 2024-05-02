@@ -157,7 +157,7 @@ class _LoginState extends State<Login> {
       email: _emailController.text,
       password: _passwordController.text,
     );
-    if (result) {
+    if (!result) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Sign in failed. Please check your credentials.'),
