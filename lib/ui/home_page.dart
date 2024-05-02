@@ -185,7 +185,7 @@ class _BusinessCardState extends State<BusinessCard> {
         Row(
           children: [
             IconButton(
-              icon: const Icon(Icons.person_outline),
+              icon: const Icon(Icons.book_outlined),
               onPressed: () {},
             ),
             Expanded(
@@ -239,11 +239,11 @@ class _BusinessCardState extends State<BusinessCard> {
                 ),
                 const PopupMenuItem<String>(
                   value: 'add_cash_in',
-                  child: Text('Add Cash In'),
+                  child: Text('Add Cash In', style: TextStyle(color: Colors.green),),
                 ),
                 const PopupMenuItem<String>(
                   value: 'add_cash_out',
-                  child: Text('Add Cash Out'),
+                  child: Text('Add Cash Out', style: TextStyle(color: Colors.red),),
                 ),
               ],
             ),
