@@ -386,9 +386,9 @@ class _HomePageState extends State<HomePage> {
 
     if (shouldSignOut == true) {
       await authProvider.signOut();
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const Login()),
-          (route) => route.isFirst); // Alternative for Flutter navigation
+      Navigator.of(context).popUntil(
+          (route) => route.isFirst); 
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Login()));
     }
   }
 }
