@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/database/data_model.dart';
+import 'package:geni_app/login/email_login.dart';
 import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
+import 'package:geni_app/model/business_model.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
@@ -30,6 +32,16 @@ class _BusinessCardState extends State<BusinessCard> {
     // TODO: implement initState
     super.initState();
     booksFuture = getBooks();
+  }
+
+  @override
+  void didUpdateWidget(covariant BusinessCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.business.business?.name != oldWidget.business.business?.name) {
+      setState(() {
+        booksFuture = getBooks();
+      });
+    }
   }
 
   @override
@@ -82,7 +94,7 @@ class _BusinessCardState extends State<BusinessCard> {
                                     for (final book in snapshot.data!)
                                       _buildBookEntry(book)
                                   ],
-                                ); 
+                                );
                               }
                             }),
                         const SizedBox(
@@ -112,9 +124,13 @@ class _BusinessCardState extends State<BusinessCard> {
               child: Center(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => NewBook(business: widget.business.business,),
-                    )).then((value) => booksFuture = getBooks());
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                          builder: (context) => NewBook(
+                            business: widget.business.business,
+                          ),
+                        ))
+                        .then((value) => booksFuture = getBooks());
                   },
                   child: const Text(
                     "Add New Book", // Use the provided button text
@@ -187,25 +203,31 @@ class _BusinessCardState extends State<BusinessCard> {
                   case 'edit':
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => NewBook(
-                        business: widget.business.business, book: book.book,
-                      )),
+                      MaterialPageRoute(
+                          builder: (context) => NewBook(
+                                business: widget.business.business,
+                                book: book.book,
+                              )),
                     ).then((value) => booksFuture = getBooks());
                     break;
                   case 'add_cash_in':
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EntryForm(
-                        book: book.book!, isCashIn: true,
-                      )),
+                      MaterialPageRoute(
+                          builder: (context) => EntryForm(
+                                book: book.book!,
+                                isCashIn: true,
+                              )),
                     ).then((value) => booksFuture = getBooks());
                     break;
                   case 'add_cash_out':
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EntryForm(
-                        book: book.book!, isCashIn: false,
-                      )),
+                      MaterialPageRoute(
+                          builder: (context) => EntryForm(
+                                book: book.book!,
+                                isCashIn: false,
+                              )),
                     ).then((value) => booksFuture = getBooks());
                     break;
                 }
@@ -240,7 +262,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageController _pageController = PageController(initialPage: 0);
+  BusinessMember? _business;
 
   @override
   Widget build(BuildContext context) {
@@ -264,53 +286,69 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       backgroundColor: const Color(0xFFEFE9E9),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: 140,
+                        width: 120,
+                        child: Image(
+                            image: AssetImage('assets/images/200 px.png')),
+                      )),
+                ],
+              ),
+            ),
+            ExpansionTile(
+              title: Text(
+                'Businesses',
+                style: TextStyle(fontWeight: FontWeight.bold) ,
+                ),
+              children: [
+                for (final business in businessProvider.userBusinesses)
+                  ListTile(
+                    title: Text(business.business!.name),
+                    onTap: () {
+                      setState(() {
+                        _business = business;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  ),
+              ],
+            ),
+            const ExpansionTile(
+              title: Text('Books', style: TextStyle(fontWeight: FontWeight.bold),),
+              children: [
+                
+              ],
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
-          if (businessProvider.isLoading && businessProvider.userBusinesses.isEmpty) const CircularProgressIndicator(),
-          if (!businessProvider.isLoading && businessProvider.userBusinesses.isEmpty)
-            const Text("You don not have any business.\n Click + Business to register a business"),
+          if (businessProvider.isLoading &&
+              businessProvider.userBusinesses.isEmpty)
+            const CircularProgressIndicator(),
+          if (!businessProvider.isLoading &&
+              businessProvider.userBusinesses.isEmpty)
+            const Text(
+                "You don not have any business.\n Click + Business to register a business"),
           if (businessProvider.userBusinesses.isNotEmpty) ...[
-            PageView(
-            controller: _pageController,
-            children: [
-              for (final business in businessProvider.userBusinesses)
-                BusinessCard(
-                  business: business,
-                ),
-            ],
-          ),
-          Positioned(
-            top: 20,
-            left: 10,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                if (_pageController.page != 0) {
-                  _pageController.previousPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                }
-              },
+            BusinessCard(
+                business: _business ?? businessProvider.userBusinesses.first,
             ),
-          ),
-          Positioned(
-            top: 20,
-            right: 10,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_forward),
-              onPressed: () {
-                if (_pageController.page != 1) {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                }
-              },
-            ),
-          ),
-
-          ]  
+          ]
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -348,7 +386,8 @@ class _HomePageState extends State<HomePage> {
 
     if (shouldSignOut == true) {
       await authProvider.signOut();
-      Navigator.of(context).popUntil(
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const Login()),
           (route) => route.isFirst); // Alternative for Flutter navigation
     }
   }
