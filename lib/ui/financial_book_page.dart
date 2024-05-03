@@ -124,7 +124,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
         },
       ),
       floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           FloatingActionButton.extended(
             heroTag: 'cash_in_button', // Unique tag for the Cash In button
@@ -143,7 +143,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
             icon: const Icon(Icons.add, color: Colors.white,),
             backgroundColor: Colors.green,
           ),
-          const SizedBox(height: 8.0),
+          //const SizedBox(height: 8.0),
           FloatingActionButton.extended(
             heroTag: 'cash_out_button', // Unique tag for the Cash Out button
             onPressed: () {

@@ -133,7 +133,7 @@ class _BusinessCardState extends State<BusinessCard> {
                         .then((value) => booksFuture = getBooks());
                   },
                   child: const Text(
-                    "Add New Book", // Use the provided button text
+                    "Add Book", // Use the provided button text
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -347,10 +347,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Stack(
+        alignment: Alignment.center,
         children: [
           if (businessProvider.isLoading &&
               businessProvider.userBusinesses.isEmpty)
-            const CircularProgressIndicator(),
+            const Center(child: CircularProgressIndicator(),),
           if (!businessProvider.isLoading &&
               businessProvider.userBusinesses.isEmpty)
             const Text(
