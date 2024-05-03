@@ -174,7 +174,7 @@ class _EntryFormState extends State<EntryForm> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
+                                    SizedBox(
                                       width: 120,
                                       height: 40,
                                       child: ElevatedButton(

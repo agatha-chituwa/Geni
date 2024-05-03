@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/login/email_login.dart';
 import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
-import 'package:geni_app/model/business_model.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
@@ -310,7 +308,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(8.0),
                       child: SizedBox(
                         height: 140,
                         width: 120,
@@ -321,7 +319,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ExpansionTile(
-              title: Text(
+              title: const Text(
                 'Businesses',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),

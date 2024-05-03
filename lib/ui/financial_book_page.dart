@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:geni_app/model/book_model.dart';
-import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/model/entry_model.dart';
 import 'package:geni_app/ui/entry_form.dart';
@@ -9,7 +8,7 @@ import 'package:provider/provider.dart';
 class FinancialBookPage extends StatefulWidget {
   final Book book;
 
-  FinancialBookPage({Key? key, required this.book}) : super(key: key);
+  const FinancialBookPage({Key? key, required this.book}) : super(key: key);
 
   @override
   _FinancialBookPageState createState() => _FinancialBookPageState();
@@ -56,32 +55,32 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Book Balance',
                         style: TextStyle(fontSize: 18.0),
                       ),
                       Text(
                         'MK ${widget.book.balance}',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 24.0, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10.0),
-                      Text(
+                      const Text(
                         'Total Cash In',
                         style: TextStyle(fontSize: 16.0, color: Colors.grey),
                       ),
                       Text(
                         'MK ${widget.book.totalCashIn}',
-                        style: TextStyle(fontSize: 20.0),
+                        style: const TextStyle(fontSize: 20.0),
                       ),
                       const SizedBox(height: 10.0),
-                      Text(
+                      const Text(
                         'Total Cash Out',
                         style: TextStyle(fontSize: 16.0, color: Colors.grey),
                       ),
                       Text(
                         'MK ${widget.book.totalCashOut}',
-                        style: TextStyle(fontSize: 20.0),
+                        style: const TextStyle(fontSize: 20.0),
                       ),
                     ],
                   ),
@@ -98,18 +97,18 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
                           children: [
                             Text(
                               'MK ${entry.amount}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Row(
                               children: [
                                 Text(
                                   'Entered By: ${entry.bookMemberRef.id}',
-                                  style: TextStyle(color: Colors.grey),
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                                 const SizedBox(width: 20),
                                 Text(
                                   '${entry.updatedAt.year}/${entry.updatedAt.month}/${entry.updatedAt.day}',
-                                  style: TextStyle(color: Colors.grey),
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                               ],
                             ),
