@@ -14,6 +14,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool _isLoading = false;
+  bool _error = false;
   final _formkey = GlobalKey<FormState>();
 
   final TextEditingController _emailController = TextEditingController();
@@ -49,7 +50,7 @@ class _LoginState extends State<Login> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 70.0, bottom: 70),
+                  padding: const EdgeInsets.only(top: 70.0, bottom: 60),
                   child: Center(
                     child: SizedBox(
                       width: 100,
@@ -58,6 +59,19 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
+                if (_error)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        'Sign in failed. Please check your credentials.',
+                        style: TextStyle(
+                          color: Colors.red, // Indicate error with red color
+                          //fontWeight: FontWeight.bold, // Emphasize the message
+                        ),
+                      ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
@@ -66,6 +80,10 @@ class _LoginState extends State<Login> {
                       hintText: 'Email Address',
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email, color: Colors.grey),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      ),
                     ),
                     controller: _emailController,
                     enabled: !_isLoading,
@@ -80,6 +98,10 @@ class _LoginState extends State<Login> {
                       hintText: 'Password',
                       labelText: 'Password',
                       prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      ),
                     ),
                     controller: _passwordController,
                     enabled: !_isLoading,
@@ -117,7 +139,7 @@ class _LoginState extends State<Login> {
                             : const Text(
                                 'Login',
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  color: Colors.white,
                                 ),
                               ),
                       ),
@@ -135,7 +157,6 @@ class _LoginState extends State<Login> {
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.blue,
-                        decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
@@ -157,13 +178,9 @@ class _LoginState extends State<Login> {
       email: _emailController.text,
       password: _passwordController.text,
     );
-    if (result) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sign in failed. Please check your credentials.'),
-        ),
-      );
+    if (!result) {
       setState(() {
+        _error = true;
         _isLoading = false;
       });
     }

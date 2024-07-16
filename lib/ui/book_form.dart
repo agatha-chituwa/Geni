@@ -122,7 +122,7 @@ class _NewBookState extends State<NewBook> {
                         Colors.green, // Set button background color
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   ),
-                  child: const Text('Submit'),
+                  child: const Text('Submit', style: TextStyle(color: Colors.white),),
                 ),
               ],
             ),

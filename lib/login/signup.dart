@@ -15,9 +15,10 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-
+  bool _error = false;
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
+  final TextEditingController _mobile = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmPassword = TextEditingController();
 
@@ -59,6 +60,19 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                 ),
+                if (_error)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        'Sign up failed. Please check your credentials.',
+                        style: TextStyle(
+                          color: Colors.red, // Indicate error with red color
+                          //fontWeight: FontWeight.bold, // Emphasize the message
+                        ),
+                      ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
@@ -104,6 +118,29 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     controller: _email,
+                    enabled: !_isLoading,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    validator: MultiValidator([
+                      //RequiredValidator(errorText: 'Please enter your phone number'),
+                      PatternValidator(r'\d{9}$',
+                          errorText: 'Please enter a valid phone number'),
+                    ]),
+                    decoration: const InputDecoration(
+                      hintText: 'Phone Number', // Clear hint with area code mention
+                      labelText: 'Phone',
+                      prefixIcon: Icon(Icons.phone, color: Colors.grey),
+                      prefixText: "+265 ", // Area code
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red),
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                      ),
+                    ),
+                    keyboardType: TextInputType.phone, // Set keyboard type for phone number
+                    controller: _mobile,
                     enabled: !_isLoading,
                   ),
                 ),
@@ -191,7 +228,7 @@ class _RegisterState extends State<Register> {
                             : const Text(
                                 'Sign Up',
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  color: Colors.white,
                                 ),
                               ),
                       ),
@@ -211,7 +248,7 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.blue,
-                        decoration: TextDecoration.underline,
+                        //decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
@@ -232,8 +269,14 @@ class _RegisterState extends State<Register> {
     final result = await authProvider.signUpWithEmail(
       email: _email.text,
       name: _name.text,
+      phoneNumber: _mobile.text,
       password: _password.text,
     );
-    //_isLoading = false;
+    if (!result) {
+      setState(() {
+        _error = true;
+        _isLoading = false;
+      });
+    }
   }
 }

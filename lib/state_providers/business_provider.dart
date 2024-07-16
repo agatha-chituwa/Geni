@@ -24,6 +24,7 @@ class BusinessProvider extends ChangeNotifier {
   Future<void> _loadBusinesses() async {
     try {
       _businesses = await _businessRepository.getBusinesses().first;
+
       notifyListeners();
     } catch (error) {
       // Handle error
@@ -34,18 +35,29 @@ class BusinessProvider extends ChangeNotifier {
     try {
       await _businessRepository.addBusiness(business);
       _businesses.add(business);
-      await _businessRepository.addUserBusiness(
-        BusinessMember(
-          userReference: userReference, 
-          roleReference: DataModel().rolesCollection.doc("owner"), 
-          businessReference: business.ref!, 
-          createdAt: DateTime.now(), 
-          updatedAt: DateTime.now()
-        )
+      final businessMember = BusinessMember(
+          userReference: userReference,
+          roleReference: DataModel().rolesCollection.doc("owner"),
+          businessReference: business.ref!,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
       );
+      businessMember.business = business;
+      await _businessRepository.addUserBusiness(
+        businessMember
+      );
+      userBusinesses.add(businessMember);
       notifyListeners();
     } catch (error) {
       // Handle error
+    }
+  }
+
+  Future<void> addBusinessMember(BusinessMember member) async {
+    try {
+      await _businessRepository.addUserBusiness(member);
+    } catch (error) {
+
     }
   }
 
@@ -80,11 +92,16 @@ class BusinessProvider extends ChangeNotifier {
     _userBusinesses = await _businessRepository.getUserBusinesses(userRef);
   }
 
+  Future<List<BusinessMember>> getBusinessMembers(DocumentReference businessRef) {
+    return _businessRepository.getBusinessMembers(businessRef);
+  }
+
   loadUserBusinesses(DocumentReference userReference) async {
     try {
       isLoading = true;
       //notifyListeners();
       _userBusinesses = await _businessRepository.getUserBusinesses(userReference);
+      debugPrint("USER BUSINESS");
       isLoading = false;
       notifyListeners();
     } catch (error) {

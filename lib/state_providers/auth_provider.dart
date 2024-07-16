@@ -1,8 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/user_model.dart' as user_model;
+import 'package:geni_app/repositories/business_repository.dart';
 import 'package:geni_app/repositories/user_repository.dart';
+
+import '../model/business_member_model.dart';
+import '../model/business_model.dart';
 
 class AuthProvider with ChangeNotifier {
   late FirebaseAuth _firebaseAuth;
@@ -157,6 +162,9 @@ class AuthProvider with ChangeNotifier {
       );
       debugPrint("User: ${_firebaseAuth.currentUser}");
       await UserRepository().addUser(mUser);
+
+      _addPersonalBusiness();
+
       return true;
     } else {
       return true;
@@ -184,7 +192,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  signUpWithEmail({required String email, required String name, required String password}) async {
+  signUpWithEmail({required String email, required String name, required String password, required String phoneNumber}) async {
     try {
       final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -198,12 +206,37 @@ class AuthProvider with ChangeNotifier {
 
       _email = email;
       _name = name;
+      _phoneNumber = phoneNumber;
 
       await _checkEmailUser();
 
       notifyListeners();
+      return true;
     } catch (e) {
       debugPrint("Sign up with email failed: $e");
+      return false;
     }
+  }
+
+  Future<void> _addPersonalBusiness() async {
+    Business business = Business(
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      name: "Personal Finances",
+      location: "Home",
+      numberOfEmployees: -101,
+    );
+    await BusinessRepository().addBusiness(
+      business
+    );
+    await BusinessRepository().addUserBusiness(
+        BusinessMember(
+            userReference: DataModel().usersCollection.doc(_email),
+            roleReference: DataModel().rolesCollection.doc("owner"),
+            businessReference: business.ref!,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now()
+        )
+    );
   }
 }

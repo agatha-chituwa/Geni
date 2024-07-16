@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
 import 'package:geni_app/model/business_model.dart';
+import 'package:geni_app/model/user_model.dart';
 
 class BusinessRepository {
   final DataModel _dataModel = DataModel();
@@ -15,6 +16,22 @@ class BusinessRepository {
     return _dataModel.businessesCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => Business.fromMap(doc.data() as Map<String, dynamic>)).toList();
     });
+  }
+
+  Future<List<BusinessMember>> getBusinessMembers(DocumentReference businessRef) async {
+    // return _dataModel.businessMembersCollection.where('businessReference', isEqualTo: businessRef).snapshots().map((sn) {
+    //   return sn.docs.map((doc) => BusinessMember.fromMap(doc.data() as Map<String, dynamic>)).toList();
+    // });
+    final businessMembers = (await _dataModel.businessMembersCollection.where('businessReference', isEqualTo: businessRef).get())
+        .docs.map((doc) => BusinessMember.fromMap(doc.data() as Map<String, dynamic>)).toList();
+
+    for (var element in businessMembers) {
+    await element.userReference.get().then((value) {
+    element.member = User.fromMap(value.data() as Map<String, dynamic>);
+    });
+    }
+
+    return businessMembers;
   }
 
   Future<void> updateBusiness(Business business) {
