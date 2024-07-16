@@ -3,6 +3,7 @@ import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
 import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
+import 'package:geni_app/ui/financial_book_page.dart';
 import 'package:provider/provider.dart';
 
 import 'book_form.dart';
@@ -47,13 +48,7 @@ class BusinessDetailPage extends StatelessWidget {
         },
         backgroundColor: const Color(0xFF19CA79),
         foregroundColor: Colors.white,
-        child: Row(
-          children: [
-            const Icon(Icons.add),
-            SizedBox(width: 0,),
-            const Icon(Icons.book)
-          ],
-        ),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -62,16 +57,11 @@ class BusinessDetailPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Business Details',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-            ),
-          ],
+        const Text(
+          'Business Details',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
         Text(
           'Location: ${business.business!.location}',
           style: const TextStyle(fontSize: 16, color: Colors.grey),
@@ -115,18 +105,34 @@ class BusinessDetailPage extends StatelessWidget {
 
   Widget _buildBookEntry(BusinessBook book, BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 2),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FinancialBookPage(book: book.book!)),
+          ).then((value) => _refreshBooks(context));
+        },
         title: Text(
           book.book?.name ?? 'Unknown',
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
-          'Balance: ${book.book?.balance}',
-          style: const TextStyle(fontSize: 16),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Balance:',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              book.book?.balance.toString() ?? '0',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
         trailing: PopupMenuButton<String>(
           onSelected: (value) {

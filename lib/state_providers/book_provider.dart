@@ -90,6 +90,8 @@ class BookProvider extends ChangeNotifier {
   Future<void> addBookEntry(Book book, Entry entry) async {
     await _bookRepository.addBookEntry(book.ref!, entry);
     book.balance += entry.isCashIn? entry.amount : -entry.amount;
+    book.totalCashIn += entry.isCashIn? entry.amount : 0;
+    book.totalCashOut += entry.isCashIn? 0 : entry.amount;
     await updateBook(book);
     notifyListeners();
   }
