@@ -7,6 +7,8 @@ class Book {
   DateTime updatedAt;
   DocumentReference? ref;
   double balance = 0.0;
+  double totalCashIn = 0.0;
+  double totalCashOut = 0.0;
 
   Book({
     required this.name,
@@ -14,6 +16,8 @@ class Book {
     required this.createdAt,
     required this.updatedAt,
     this.balance = 0.0,
+    this.totalCashIn = 0.0,
+    this.totalCashOut = 0.0,
     this.ref,
   });
 
@@ -24,6 +28,8 @@ class Book {
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
       balance: data['Balance'] as double,
+      //totalCashIn: data['total_cash_in'] as double,
+      //totalCashOut: data['total_cash_out'] as double,
       ref: data['ref'] as DocumentReference?,
     );
   }
@@ -35,6 +41,8 @@ class Book {
       'Created_at': createdAt,
       'Updated_at': updatedAt,
       'Balance': balance,
+      'total_cash_in': totalCashIn,
+      'total_cash_out': totalCashOut,
       'ref': ref,
     };
   }
