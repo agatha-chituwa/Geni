@@ -23,7 +23,15 @@ class BookRepository {
     return book.ref!.update(book.toMap());
   }
 
-  Future<void> deleteBook(Book book) {
+  Future<void> deleteBook(Book book) async {
+    final bb = await _dataModel.businessBookCollection.where('bookReference', isEqualTo: book.ref).get();
+    for(final b in bb.docs) {
+      b.reference.delete();
+    }
+    final bu = await _dataModel.userBookCollection.where('bookReference', isEqualTo: book.ref).get();
+    for(final b in bu.docs) {
+      b.reference.delete();
+    }
     return book.ref!.delete();
   }
 

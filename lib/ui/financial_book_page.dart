@@ -31,13 +31,10 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
         backgroundColor: const Color(0xFF19CA79),
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => _showDeleteConfirmationDialog(context),
-          ),
+          _buildMoreActions(context),
         ],
       ),
-      body: FutureBuilder<List<Entry>>(
+      body:  _deleting? Center(child: const CircularProgressIndicator()) :  FutureBuilder<List<Entry>>(
         future: _entriesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -65,6 +62,24 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
         },
       ),
       floatingActionButton: _buildFABs(),
+    );
+  }
+
+  Widget _buildMoreActions(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (String value) {
+        if (value == 'delete') {
+          _showDeleteConfirmationDialog(context);
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        return [
+          const PopupMenuItem<String>(
+            value: 'delete',
+            child: Text('Delete Book'),
+          ),
+        ];
+      },
     );
   }
 
@@ -224,6 +239,8 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
     );
   }
 
+  bool _deleting = false;
+
   void _showDeleteConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -252,10 +269,13 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
   }
 
   void _deleteBook() {
-    // Implement book deletion logic
+    setState(() {
+      _deleting = true;
+    });
     Provider.of<BookProvider>(context, listen: false)
-        .deleteBook(widget.book);
-    Navigator.of(context).pop(); // Go back to the previous screen
+        .deleteBook(widget.book).then((e) {
+      Navigator.of(context).pop();
+    });
   }
 
   Future<List<Entry>> _getEntries() {

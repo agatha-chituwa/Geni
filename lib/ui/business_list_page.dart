@@ -115,7 +115,10 @@ class _BusinessListPageState extends State<BusinessListPage> {
                     ),
                     trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BusinessDetailPage(business: business)));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BusinessDetailPage(business: business)))
+                      .then((v) {
+                        _loadBusinesses();
+                      });
                     },
                   ),
                 );

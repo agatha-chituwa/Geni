@@ -3,16 +3,34 @@ import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
 import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
+import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/financial_book_page.dart';
 import 'package:provider/provider.dart';
 
 import 'book_form.dart';
 import 'entry_form.dart';
 
-class BusinessDetailPage extends StatelessWidget {
+class BusinessDetailPage extends StatefulWidget {
   final BusinessMember business;
 
-  const BusinessDetailPage({Key? key, required this.business}) : super(key: key);
+  BusinessDetailPage({Key? key, required this.business}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return BusinessDetailsState();
+  }
+}
+
+class BusinessDetailsState extends State<BusinessDetailPage> {
+
+  bool _deleting = false;
+  late BusinessMember business;
+
+  @override
+  void initState() {
+    super.initState();
+    business = widget.business;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +44,10 @@ class BusinessDetailPage extends StatelessWidget {
             onPressed: () {},
             icon: const Icon(Icons.people),
           ),
+          _buildMoreActions(context),
         ],
       ),
-      body: Padding(
+      body:  _deleting? const Center(child: CircularProgressIndicator()) : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,6 +69,24 @@ class BusinessDetailPage extends StatelessWidget {
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  Widget _buildMoreActions(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (String value) {
+        if (value == 'delete') {
+          _showDeleteConfirmationDialog(context);
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        return [
+          const PopupMenuItem<String>(
+            value: 'delete',
+            child: Text('Delete Business'),
+          ),
+        ];
+      },
     );
   }
 
@@ -82,7 +119,7 @@ class BusinessDetailPage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return const Center(child: Text('Error retrieving business books'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(
             child: Text(
@@ -181,4 +218,41 @@ class BusinessDetailPage extends StatelessWidget {
   void _refreshBooks(BuildContext context) {
     Provider.of<BookProvider>(context, listen: false).getBusinessBooks(business.businessReference);
   }
+
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this business? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                _deleteBook();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteBook() {
+    setState(() {
+      _deleting = true;
+    });
+    Provider.of<BusinessProvider>(context, listen: false).deleteBusiness(business).then((e) {
+      Navigator.of(context).pop();
+    });
+  }
+
 }

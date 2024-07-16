@@ -74,10 +74,10 @@ class BusinessProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteBusiness(Business business) async {
+  Future<void> deleteBusiness(BusinessMember business) async {
     try {
-      await _businessRepository.deleteBusiness(business);
       _businesses.remove(business);
+      await _businessRepository.deleteBusiness(business.business!);
       notifyListeners();
     } catch (error) {
       // Handle error
