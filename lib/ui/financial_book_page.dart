@@ -102,9 +102,9 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildInfoRow('Book Balance', 'MK ${widget.book.balance}', isBold: true, valueFontSize: 22.0),
+          _buildInfoRow('Book Balance', 'MK ${widget.book.balance}', isBold: true, valueFontSize: 22.0, valueColor: widget.book.balance < 0? Colors.red : Colors.blue),
           const SizedBox(height: 4.0),
-          _buildInfoRow('Total Cash In', 'MK ${widget.book.totalCashIn}', valueColor: Colors.green),
+          _buildInfoRow('Total Cash In', 'MK ${widget.book.totalCashIn}', valueColor: Colors.blue),
           const SizedBox(height: 4.0),
           _buildInfoRow('Total Cash Out', 'MK ${widget.book.totalCashOut}', valueColor: Colors.red),
         ],
@@ -137,7 +137,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
   Widget _buildEntryTile(Entry entry) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      color: entry.isCashIn? Colors.green[50] : Colors.red[50],
+      color: entry.isCashIn? Colors.blue[50] : Colors.red[50],
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: ListTile(
