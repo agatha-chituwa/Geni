@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geni_app/model/user_book_model.dart';
 
 class Book {
   String name;
@@ -9,6 +10,8 @@ class Book {
   double balance = 0.0;
   double totalCashIn = 0.0;
   double totalCashOut = 0.0;
+
+  List<UserBook> members = [];
 
   Book({
     required this.name,
@@ -28,8 +31,8 @@ class Book {
       createdAt: (data['Created_at'] as Timestamp).toDate(),
       updatedAt: (data['Updated_at'] as Timestamp).toDate(),
       balance: data['Balance'] as double,
-      //totalCashIn: data['total_cash_in'] as double,
-      //totalCashOut: data['total_cash_out'] as double,
+      totalCashIn: data['total_cash_in'] as double? ?? 0.0,
+      totalCashOut: data['total_cash_out'] as double? ?? 0.0,
       ref: data['ref'] as DocumentReference?,
     );
   }

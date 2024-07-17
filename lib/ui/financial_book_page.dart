@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:geni_app/model/book_model.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/model/entry_model.dart';
+import 'package:geni_app/ui/entry_details_page.dart';
 import 'package:geni_app/ui/entry_form.dart';
 import 'package:provider/provider.dart';
 
+import '../state_providers/auth_provider.dart';
+
 class FinancialBookPage extends StatefulWidget {
   final Book book;
-
-  const FinancialBookPage({Key? key, required this.book}) : super(key: key);
+  final String? role;
+  const FinancialBookPage({Key? key, required this.book, required this.role}) : super(key: key);
 
   @override
   _FinancialBookPageState createState() => _FinancialBookPageState();
@@ -16,11 +19,15 @@ class FinancialBookPage extends StatefulWidget {
 
 class _FinancialBookPageState extends State<FinancialBookPage> {
   late Future<List<Entry>> _entriesFuture;
-
+  late String role;
   @override
   void initState() {
     super.initState();
     _entriesFuture = _getEntries();
+    role = widget.role ?? widget.book.members.firstWhere(
+            (m) => m.userReference.id == Provider.of<AuthProvider>(context, listen: false).currentUser?.email
+    ).roleReference.id.toLowerCase();
+
   }
 
   @override
@@ -30,11 +37,16 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
         title: Text(widget.book.name),
         backgroundColor: const Color(0xFF19CA79),
         foregroundColor: Colors.white,
-        actions: [
+        actions:  [
+          // IconButton(
+          //   onPressed: () {},
+          //   icon: const Icon(Icons.people),
+          // ),
+          if (role != "viewer")
           _buildMoreActions(context),
         ],
       ),
-      body:  _deleting? Center(child: const CircularProgressIndicator()) :  FutureBuilder<List<Entry>>(
+      body:  _deleting? const Center(child: CircularProgressIndicator()) :  FutureBuilder<List<Entry>>(
         future: _entriesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -61,7 +73,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
           }
         },
       ),
-      floatingActionButton: _buildFABs(),
+      floatingActionButton: role != "viewer"? _buildFABs() : null,
     );
   }
 
@@ -90,17 +102,17 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildInfoRow('Book Balance', 'MK ${widget.book.balance}', isBold: true, valueFontSize: 24.0),
-          const SizedBox(height: 10.0),
+          _buildInfoRow('Book Balance', 'MK ${widget.book.balance}', isBold: true, valueFontSize: 22.0),
+          const SizedBox(height: 4.0),
           _buildInfoRow('Total Cash In', 'MK ${widget.book.totalCashIn}', valueColor: Colors.green),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 4.0),
           _buildInfoRow('Total Cash Out', 'MK ${widget.book.totalCashOut}', valueColor: Colors.red),
         ],
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {bool isBold = false, double valueFontSize = 20.0, Color? valueColor}) {
+  Widget _buildInfoRow(String label, String value, {bool isBold = false, double valueFontSize = 18.0, Color? valueColor}) {
     return Row(
       children: [
         Text(
@@ -113,7 +125,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
             textAlign: TextAlign.right,
             style: TextStyle(
               fontSize: valueFontSize,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
               color: valueColor ?? (isBold ? Colors.black : Colors.grey[700]),
             ),
           ),
@@ -125,9 +137,22 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
   Widget _buildEntryTile(Entry entry) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      color: entry.isCashIn? Colors.green[50] : Colors.red[50],
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EntryDetailsPage(entry: entry, book: widget.book, role: role)),
+          ).then((value) => setState(() {
+            _entriesFuture = _getEntries();
+          }));
+        },
+        leading: Icon(
+          entry.isCashIn? Icons.add : Icons.remove,
+        ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
         title: Text(
           entry.description,
@@ -208,7 +233,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
           },
           label: const Text(
             'Cash In',
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+            style: TextStyle(color: Colors.white),
           ),
           icon: const Icon(Icons.add, color: Colors.white),
           backgroundColor: Colors.green,
@@ -230,7 +255,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
           },
           label: const Text(
             'Cash Out',
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+            style: TextStyle(color: Colors.white),
           ),
           icon: const Icon(Icons.remove, color: Colors.white),
           backgroundColor: Colors.red,

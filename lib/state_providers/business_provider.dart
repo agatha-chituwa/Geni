@@ -108,5 +108,13 @@ class BusinessProvider extends ChangeNotifier {
       // Handle error
     }
   }
+
+  loadBusinessMembers(Business entity) async {
+    entity.members = await getBusinessMembers(entity.ref!);
+  }
+
+  removeBusinessMember(BusinessMember member) async {
+    await member.ref!.delete();
+  }
   
 }

@@ -81,6 +81,17 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  bool checkPermissions(String role, String action) {
+    if (role.toLowerCase() == "owner") {
+      return true;
+    } else if (role.toLowerCase() == "editor" && action == "delete") {
+      return false;
+    } else if (role.toLowerCase() == "viewer" && action == "edit") {
+      return false;
+    }
+    return true;
+  }
+
   // Sign in with verification code
   Future<void> signInWithVerificationCode(String code) async {
     try {

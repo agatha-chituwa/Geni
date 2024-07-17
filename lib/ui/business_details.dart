@@ -5,8 +5,10 @@ import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/ui/financial_book_page.dart';
+import 'package:geni_app/ui/members_page.dart';
 import 'package:provider/provider.dart';
 
+import '../state_providers/auth_provider.dart';
 import 'book_form.dart';
 import 'entry_form.dart';
 
@@ -40,11 +42,19 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
         backgroundColor: const Color(0xFF19CA79),
         foregroundColor: Colors.white,
         actions: [
+          if (business.roleReference.id.toLowerCase() == 'owner')
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MembersPage(isBusiness: true, entity: business.business),
+              ));
+            },
             icon: const Icon(Icons.people),
           ),
-          _buildMoreActions(context),
+          if (business.roleReference.id.toLowerCase() == 'owner')
+            _buildMoreActions(context),
         ],
       ),
       body:  _deleting? const Center(child: CircularProgressIndicator()) : Padding(
@@ -58,7 +68,7 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: (business.roleReference.id.toLowerCase() != 'viewer') ? FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
@@ -68,7 +78,7 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
         backgroundColor: const Color(0xFF19CA79),
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
-      ),
+      ) : null,
     );
   }
 
@@ -151,7 +161,7 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => FinancialBookPage(book: book.book!)),
+                builder: (context) => FinancialBookPage(book: book.book!, role: business.roleReference.id.toLowerCase())),
           ).then((value) => _refreshBooks(context));
         },
         title: Text(
@@ -171,7 +181,12 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
             ),
           ],
         ),
-        trailing: PopupMenuButton<String>(
+        trailing: // (
+        //       book.book?.members.firstWhere(
+        //       (m) => m.userReference.id == Provider.of<AuthProvider>(context, listen: false).currentUser?.email,
+        //     ).roleReference.id.toLowerCase() != "viewer"
+        //     )
+        (business.roleReference.id.toLowerCase() != 'viewer') ? PopupMenuButton<String>(
           onSelected: (value) {
             switch (value) {
               case 'edit':
@@ -203,7 +218,7 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
               child: Text('Add Cash Out'),
             ),
           ],
-        ),
+        ) : null,
       ),
     );
   }

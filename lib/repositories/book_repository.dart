@@ -5,6 +5,8 @@ import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/model/entry_model.dart';
 import 'package:geni_app/model/user_book_model.dart';
 
+import '../model/user_model.dart';
+
 class BookRepository {
   final DataModel _dataModel = DataModel();
 
@@ -124,5 +126,18 @@ class BookRepository {
       });
     }
     return userBooks;
+  }
+
+  Future<List<UserBook>> getMembersOfBook(DocumentReference<Object?> documentReference) async {
+    final bookMembers = (await _dataModel.businessMembersCollection.where('bookReference', isEqualTo: documentReference).get())
+        .docs.map((doc) => UserBook.fromMap(doc.data() as Map<String, dynamic>)).toList();
+
+    for (var element in bookMembers) {
+    await element.userReference.get().then((value) {
+    element.member = User.fromMap(value.data() as Map<String, dynamic>);
+    });
+    }
+
+    return bookMembers;
   }
 }
