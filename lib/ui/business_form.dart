@@ -35,91 +35,102 @@ class _BusinessFormState extends State<BusinessForm> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 70.0),
-                Center(
-                  child: Text(
-                    'Enter Business Details',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: constraints.maxWidth > 600 ? 600 : constraints.maxWidth,
                 ),
-                const SizedBox(height: 60.0),
-                TextFormField(
-                  validator: RequiredValidator(errorText: 'Please enter a business name'),
-                  decoration: InputDecoration(
-                    labelText: 'Business Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    prefixIcon: const Icon(Icons.business),
-                  ),
-                  onChanged: (value) => setState(() => _businessName = value),
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  validator: RequiredValidator(errorText: 'Please enter a location'),
-                  decoration: InputDecoration(
-                    labelText: 'Location',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    prefixIcon: const Icon(Icons.location_on),
-                  ),
-                  onChanged: (value) => setState(() => _location = value),
-                ),
-                const SizedBox(height: 40.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15.0),
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  onPressed: _isLoading
-                      ? null
-                      : () async {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      await Provider.of<BusinessProvider>(context, listen: false).addBusiness(
-                        Business(
-                          createdAt: DateTime.now(),
-                          updatedAt: DateTime.now(),
-                          name: _businessName,
-                          location: _location,
-                          numberOfEmployees: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 70.0),
+                        Center(
+                          child: Text(
+                            'Enter Business Details',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                         ),
-                        DataModel().usersCollection.doc(
-                            Provider.of<AuthProvider>(context, listen: false).currentUser!.email!),
-                      );
-                      setState(() {
-                        _isLoading = false;
-                      });
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )
-                      : const Text(
-                    'Register Business',
-                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                        const SizedBox(height: 60.0),
+                        TextFormField(
+                          validator: RequiredValidator(errorText: 'Please enter a business name'),
+                          decoration: InputDecoration(
+                            labelText: 'Business Name',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            prefixIcon: const Icon(Icons.business),
+                          ),
+                          onChanged: (value) => setState(() => _businessName = value),
+                        ),
+                        const SizedBox(height: 20.0),
+                        TextFormField(
+                          validator: RequiredValidator(errorText: 'Please enter a location'),
+                          decoration: InputDecoration(
+                            labelText: 'Location',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            prefixIcon: const Icon(Icons.location_on),
+                          ),
+                          onChanged: (value) => setState(() => _location = value),
+                        ),
+                        const SizedBox(height: 40.0),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 15.0),
+                            backgroundColor: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          onPressed: _isLoading
+                              ? null
+                              : () async {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await Provider.of<BusinessProvider>(context, listen: false).addBusiness(
+                                Business(
+                                  createdAt: DateTime.now(),
+                                  updatedAt: DateTime.now(),
+                                  name: _businessName,
+                                  location: _location,
+                                  numberOfEmployees: 0,
+                                ),
+                                DataModel().usersCollection.doc(
+                                    Provider.of<AuthProvider>(context, listen: false).currentUser!.email!),
+                              );
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                              : const Text(
+                            'Register Business',
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        }
       ),
     );
   }

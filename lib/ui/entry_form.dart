@@ -61,156 +61,168 @@ class _EntryFormState extends State<EntryForm> {
         ),
       ),
       backgroundColor: Colors.grey[200],
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Card(
-                  elevation: 3.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
+                child: ConstrainedBox(
+
+                  constraints: BoxConstraints(
+                    maxWidth: constraints.maxWidth > 600 ? 600 : constraints.maxWidth,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20.0,
-                      horizontal: 16.0,
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Date and Time
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Date: ${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
-                                style: TextStyle(color: Colors.grey[700]),
-                              ),
-                              Text(
-                                'Time: ${_selectedTime.hour}:${_selectedTime.minute}',
-                                style: TextStyle(color: Colors.grey[700]),
-                              ),
-                            ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          elevation: 3.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-
-                          const SizedBox(height: 30.0),
-
-                          Text(
-                            _title,
-                            style: TextStyle(
-                              color: widget.isCashIn ? Colors.green : Colors.red,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24.0,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 20.0,
+                              horizontal: 16.0,
                             ),
-                            textAlign: TextAlign.left,
-                          ),
-
-                          const SizedBox(height: 30.0),
-
-                          // Amount Field
-                          TextFormField(
-                            initialValue: widget.entry == null? null : _amount.toString(),
-                            validator: RequiredValidator(
-                                errorText: 'Please enter an amount'),
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: 'Amount',
-                              border: OutlineInputBorder(),
-                            ),
-                            onChanged: (value) => setState(
-                                    () => _amount = value.isNotEmpty
-                                    ? double.parse(value)
-                                    : 0),
-                          ),
-
-                          const SizedBox(height: 20.0),
-
-                          // Description Field
-                          TextFormField(
-                            initialValue: _description,
-                            validator: RequiredValidator(
-                                errorText: 'Please enter a description'),
-                            decoration: const InputDecoration(
-                              labelText: 'Description',
-                              border: OutlineInputBorder(),
-                            ),
-                            onChanged: (value) =>
-                                setState(() => _description = value),
-                          ),
-
-                          const SizedBox(height: 20.0),
-
-                          // Payment Mode Field (Dropdown)
-                          DropdownButtonFormField<String>(
-                            value: _paymentMode,
-                            items: [
-                              'Cash',
-                              'Credit Card',
-                              'Debit Card',
-                              'Online Transfer'
-                            ].map((String mode) {
-                              return DropdownMenuItem<String>(
-                                value: mode,
-                                child: Text(mode),
-                              );
-                            }).toList(),
-                            onChanged: (String? value) => setState(
-                                    () => _paymentMode = value ?? ''),
-                            decoration: const InputDecoration(
-                              labelText: 'Payment Mode',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-
-                          const SizedBox(height: 30.0),
-
-                          // Save and Add New Button
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: _isLoading ? null : _saveEntry,
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    backgroundColor: widget.isCashIn
-                                        ? Colors.green
-                                        : Colors.red,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16.0),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Date and Time
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Date: ${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
+                                        style: TextStyle(color: Colors.grey[700]),
+                                      ),
+                                      Text(
+                                        'Time: ${_selectedTime.hour}:${_selectedTime.minute}',
+                                        style: TextStyle(color: Colors.grey[700]),
+                                      ),
+                                    ],
                                   ),
-                                  child: _isLoading
-                                      ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                      : const Text(
-                                    'Save',
+
+                                  const SizedBox(height: 30.0),
+
+                                  Text(
+                                    _title,
                                     style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
+                                      color: widget.isCashIn ? Colors.green : Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24.0,
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  ),
+
+                                  const SizedBox(height: 30.0),
+
+                                  // Amount Field
+                                  TextFormField(
+                                    initialValue: widget.entry == null? null : _amount.toString(),
+                                    validator: RequiredValidator(
+                                        errorText: 'Please enter an amount'),
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Amount',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onChanged: (value) => setState(
+                                            () => _amount = value.isNotEmpty
+                                            ? double.parse(value)
+                                            : 0),
+                                  ),
+
+                                  const SizedBox(height: 20.0),
+
+                                  // Description Field
+                                  TextFormField(
+                                    initialValue: _description,
+                                    validator: RequiredValidator(
+                                        errorText: 'Please enter a description'),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Description',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onChanged: (value) =>
+                                        setState(() => _description = value),
+                                  ),
+
+                                  const SizedBox(height: 20.0),
+
+                                  // Payment Mode Field (Dropdown)
+                                  DropdownButtonFormField<String>(
+                                    value: _paymentMode,
+                                    items: [
+                                      'Cash',
+                                      'Credit Card',
+                                      'Debit Card',
+                                      'Online Transfer'
+                                    ].map((String mode) {
+                                      return DropdownMenuItem<String>(
+                                        value: mode,
+                                        child: Text(mode),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? value) => setState(
+                                            () => _paymentMode = value ?? ''),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Payment Mode',
+                                      border: OutlineInputBorder(),
                                     ),
                                   ),
-                                ),
+
+                                  const SizedBox(height: 30.0),
+
+                                  // Save and Add New Button
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: _isLoading ? null : _saveEntry,
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            backgroundColor: widget.isCashIn
+                                                ? Colors.green
+                                                : Colors.red,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 16.0),
+                                          ),
+                                          child: _isLoading
+                                              ? const CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                              : const Text(
+                                            'Save',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }
       ),
     );
   }

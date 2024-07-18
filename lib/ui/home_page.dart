@@ -80,31 +80,4 @@ class _HomePageState extends State<HomePage> {
           : null,
     );
   }
-
-  void _signOutUser(BuildContext context) async {
-    final shouldSignOut = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Sign Out Confirmation'),
-        content: const Text('Are you sure you want to sign out?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false), // Cancel
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true), // Sign Out
-            child: const Text('Sign Out'),
-          ),
-        ],
-      ),
-    );
-
-    if (shouldSignOut == true) {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      await authProvider.signOut();
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Login()));
-    }
-  }
 }
