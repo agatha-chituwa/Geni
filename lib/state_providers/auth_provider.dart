@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/user_model.dart' as user_model;
 import 'package:geni_app/repositories/business_repository.dart';

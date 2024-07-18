@@ -5,7 +5,6 @@ import 'package:geni_app/ui/entry_form.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../state_providers/auth_provider.dart';
 
 class EntryDetailsPage extends StatefulWidget {
   final Entry entry;

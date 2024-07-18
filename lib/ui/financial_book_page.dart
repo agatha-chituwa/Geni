@@ -117,7 +117,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 16.0, color: Colors.grey),
+          style: const TextStyle(fontSize: 16.0, color: Colors.grey),
         ),
         Expanded(
           child: Text(

@@ -10,6 +10,7 @@ class DataModel {
   final CollectionReference userBookCollection = FirebaseFirestore.instance.collection(DataModel.userBookCollectionId);
   final CollectionReference businessBookCollection = FirebaseFirestore.instance.collection(DataModel.businessBookCollectionId);
   final CollectionReference businessMembersCollection = FirebaseFirestore.instance.collection(DataModel.businessMembersCollectionId);
+  final CollectionReference faqCollection = FirebaseFirestore.instance.collection(DataModel.faqCollectionId);
 
   CollectionReference<Object?> entriesCollection(DocumentReference bookRef) {
     return bookRef.collection(DataModel.entriesCollectionId);
@@ -30,6 +31,7 @@ class DataModel {
   static const String userBookCollectionId = 'UserBook';
   static const String businessBookCollectionId = 'BusinessBook';
   static const String businessBookMemberCollectionId = 'BusinessBookMember';
+  static const String faqCollectionId = "FAQ";
 
   // Singleton instance
   static final DataModel _instance = DataModel._internal();

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/business_member_model.dart';
 import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/state_providers/book_provider.dart';
@@ -8,14 +7,13 @@ import 'package:geni_app/ui/financial_book_page.dart';
 import 'package:geni_app/ui/members_page.dart';
 import 'package:provider/provider.dart';
 
-import '../state_providers/auth_provider.dart';
 import 'book_form.dart';
 import 'entry_form.dart';
 
 class BusinessDetailPage extends StatefulWidget {
   final BusinessMember business;
 
-  BusinessDetailPage({Key? key, required this.business}) : super(key: key);
+  const BusinessDetailPage({Key? key, required this.business}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -41,7 +39,7 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
         title: Text(business.business!.name),
         backgroundColor: const Color(0xFF19CA79),
         foregroundColor: Colors.white,
-        actions: [
+        actions: business.business?.numberOfEmployees == -101? null : [
           if (business.roleReference.id.toLowerCase() == 'owner')
           IconButton(
             onPressed: () {
@@ -154,9 +152,10 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      color: book.book!.balance < 0? Colors.red[50] : Colors.blue[50],
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
         onTap: () {
           Navigator.push(
             context,
@@ -169,12 +168,13 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text(
-              'Balance:',
+              'Balance (MWK):',
               style: TextStyle(fontSize: 16),
             ),
+            const SizedBox(width: 8,),
             Text(
               book.book?.balance.toString() ?? '0',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

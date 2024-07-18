@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:geni_app/database/data_model.dart';
@@ -52,7 +51,7 @@ class _MembersPageState extends State<MembersPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Members to $entityName'),
+        title: Text('Manage Members of $entityName'),
         backgroundColor: const Color(0xFF19CA79),
         foregroundColor: Colors.white,
       ),
@@ -117,7 +116,7 @@ class _MembersPageState extends State<MembersPage> {
 
   Widget _buildMemberRow(dynamic member) {
     return ListTile(
-      leading: CircleAvatar(
+      leading: const CircleAvatar(
         child: Icon(Icons.person),
       ),
       title: Text(
@@ -129,7 +128,7 @@ class _MembersPageState extends State<MembersPage> {
         style: const TextStyle(fontSize: 14.0, color: Colors.grey),
       ),
       trailing: IconButton(
-        icon: Icon(Icons.remove, color: Colors.red),
+        icon: const Icon(Icons.remove, color: Colors.red),
         onPressed: () {
           _confirmRemove(member);
         },
@@ -142,17 +141,17 @@ class _MembersPageState extends State<MembersPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Remove Member'),
+          title: const Text('Remove Member'),
           content: Text('Are you sure you want to remove ${member.member.name}?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Remove', style: TextStyle(color: Colors.red)),
+              child: const Text('Remove', style: TextStyle(color: Colors.red)),
               onPressed: () {
                 Navigator.of(context).pop();
                 _removeMember(member);
