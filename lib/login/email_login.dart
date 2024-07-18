@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geni_app/login/reset_password_page.dart';
 import 'package:geni_app/login/signup.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/ui/home_page.dart';
@@ -154,6 +155,22 @@ class _LoginState extends State<Login> {
                     },
                     child: const Text(
                       'Don\'t have an account? Sign Up',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ResetPasswordPage()));
+                    },
+                    child: const Text(
+                      'Forgot Password',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.blue,
