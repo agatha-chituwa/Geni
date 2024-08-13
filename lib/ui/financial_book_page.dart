@@ -55,6 +55,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final List<Entry> entries = snapshot.data!;
+            entries.sort((a, b) => b.createdAt.millisecondsSinceEpoch.compareTo(a.createdAt.millisecondsSinceEpoch));
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -151,7 +152,7 @@ class _FinancialBookPageState extends State<FinancialBookPage> {
           }));
         },
         leading: Icon(
-          entry.isCashIn? Icons.add : Icons.remove,
+          entry.isCashIn? Icons.transit_enterexit_outlined : Icons.outbond_outlined,
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
         title: Text(

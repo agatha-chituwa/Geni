@@ -108,10 +108,16 @@ class _BusinessFormState extends State<BusinessForm> {
                                 DataModel().usersCollection.doc(
                                     Provider.of<AuthProvider>(context, listen: false).currentUser!.email!),
                               );
+
                               setState(() {
                                 _isLoading = false;
                               });
                               Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Business added successfully'),
+                                ),
+                              );
                             }
                           },
                           child: _isLoading

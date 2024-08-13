@@ -6,6 +6,9 @@ import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/ui/home_page.dart';
 import 'package:provider/provider.dart';
 
+import '../database/data_model.dart';
+import '../state_providers/business_provider.dart';
+
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
@@ -25,13 +28,16 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.addListener(() {
+    authProvider.addListener(() async {
       if (authProvider.isSignedIn && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Welcome'),
-          ),
-        );
+        await Provider.of<BusinessProvider>(context, listen: false)
+            .init(DataModel().usersCollection.doc(authProvider.currentUser?.email));
+
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     content: Text('Welcome'),
+        //   ),
+        // );
 
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const HomePage()));

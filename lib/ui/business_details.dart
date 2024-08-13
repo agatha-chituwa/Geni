@@ -136,6 +136,7 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
             ),
           );
         } else {
+          snapshot.data!.sort((a, b) => b.book!.createdAt.millisecondsSinceEpoch.compareTo(a.book!.createdAt.millisecondsSinceEpoch));
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {

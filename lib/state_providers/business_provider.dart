@@ -18,7 +18,7 @@ class BusinessProvider extends ChangeNotifier {
 
   init(DocumentReference? userReference) async {
     await _loadBusinesses();
-    if (userReference != null) loadUserBusinesses(userReference);
+    if (userReference != null) await loadUserBusinesses(userReference);
   }
 
   Future<void> _loadBusinesses() async {

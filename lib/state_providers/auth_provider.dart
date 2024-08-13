@@ -173,7 +173,7 @@ class AuthProvider with ChangeNotifier {
       debugPrint("User: ${_firebaseAuth.currentUser}");
       await UserRepository().addUser(mUser);
 
-      _addPersonalBusiness();
+      await _addPersonalBusiness();
 
       return true;
     } else {

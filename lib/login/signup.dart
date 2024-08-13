@@ -5,6 +5,9 @@ import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/ui/home_page.dart';
 import 'package:provider/provider.dart';
 
+import '../database/data_model.dart';
+import '../state_providers/business_provider.dart';
+
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
 
@@ -24,16 +27,18 @@ class _RegisterState extends State<Register> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.addListener(() {
+    authProvider.addListener(() async {
       if (authProvider.isSignedIn && context.mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Welcome'),
-          ),
-        );
+        //  ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     content: Text('Welcome'),
+        //   ),
+        // );
+        final bProvider = Provider.of<BusinessProvider>(context, listen: false);
+        await bProvider.init(DataModel().usersCollection.doc(authProvider.currentUser?.email));
+        debugPrint("Business Provider: ${bProvider.userBusinesses.first}");
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       }
     });

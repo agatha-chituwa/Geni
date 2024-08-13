@@ -62,7 +62,13 @@ class _BusinessListPageState extends State<BusinessListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              Text("Loading business.")
+            ],
+          ))
           : RefreshIndicator(
         onRefresh: _refreshBusinesses,
         child: _userBusinesses.isEmpty && _personalBusiness == null
@@ -146,6 +152,7 @@ class _BusinessListPageState extends State<BusinessListPage> {
     );
     if (_personalBusiness != null) {
       userBusinesses = userBusinesses.where((business) => business.business?.numberOfEmployees != -101).toList();
+      userBusinesses.sort((a, b) => a.business!.name.compareTo(b.business!.name));
     }
     return userBusinesses;
   }
