@@ -128,7 +128,7 @@ class _MembersPageState extends State<MembersPage> {
         style: const TextStyle(fontSize: 14.0, color: Colors.grey),
       ),
       trailing: IconButton(
-        icon: const Icon(Icons.remove, color: Colors.red),
+        icon: const Icon(Icons.delete, color: Colors.red),
         onPressed: () {
           _confirmRemove(member);
         },
