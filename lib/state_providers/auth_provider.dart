@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/user_model.dart' as user_model;
 import 'package:geni_app/repositories/business_repository.dart';
@@ -79,6 +78,17 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       debugPrint("Error starting phone number verification: $e");
     }
+  }
+
+  bool checkPermissions(String role, String action) {
+    if (role.toLowerCase() == "owner") {
+      return true;
+    } else if (role.toLowerCase() == "editor" && action == "delete") {
+      return false;
+    } else if (role.toLowerCase() == "viewer" && action == "edit") {
+      return false;
+    }
+    return true;
   }
 
   // Sign in with verification code
@@ -163,7 +173,7 @@ class AuthProvider with ChangeNotifier {
       debugPrint("User: ${_firebaseAuth.currentUser}");
       await UserRepository().addUser(mUser);
 
-      _addPersonalBusiness();
+      await _addPersonalBusiness();
 
       return true;
     } else {

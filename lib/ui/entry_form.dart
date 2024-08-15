@@ -12,9 +12,12 @@ class EntryForm extends StatefulWidget {
   final Entry? entry;
   final Book book;
 
-  const EntryForm(
-      {Key? key, required this.isCashIn, required this.book, this.entry})
-      : super(key: key);
+  const EntryForm({
+    Key? key,
+    required this.isCashIn,
+    required this.book,
+    this.entry,
+  }) : super(key: key);
 
   @override
   _EntryFormState createState() => _EntryFormState();
@@ -35,7 +38,7 @@ class _EntryFormState extends State<EntryForm> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime.now();
+    _selectedDate = widget.entry?.createdAt ?? DateTime.now();
     _selectedTime = TimeOfDay.now();
     _title = widget.isCashIn ? 'Cash In' : 'Cash Out';
     _amount = widget.entry?.amount ?? 0;
@@ -48,6 +51,8 @@ class _EntryFormState extends State<EntryForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.book.name} Book Entry'),
+        backgroundColor: const Color(0xFF19CA79),
+        foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -55,178 +60,169 @@ class _EntryFormState extends State<EntryForm> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white, // Set the background color here
-          child: Padding(
-            padding: const EdgeInsets.only(top: 50.0, left: 20, right: 20),
-            child: Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: 50.0,
-                    ),
-                    SizedBox(
-                      child: Card(
-                        elevation: 0.5,
-                        margin: const EdgeInsets.only(bottom: 60),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 20,
-                            left: 16.0,
-                            right: 16.0,
-                            bottom: 20,
+      backgroundColor: Colors.grey[200],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
+                child: ConstrainedBox(
+
+                  constraints: BoxConstraints(
+                    maxWidth: constraints.maxWidth > 600 ? 600 : constraints.maxWidth,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          elevation: 3.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                // Date and Time
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        'Date: ${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}'),
-                                    Text(
-                                        'Time: ${_selectedTime.hour}:${_selectedTime.minute}'),
-                                  ],
-                                ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 20.0,
+                              horizontal: 16.0,
+                            ),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Date and Time
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Date: ${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
+                                        style: TextStyle(color: Colors.grey[700]),
+                                      ),
+                                      Text(
+                                        'Time: ${_selectedTime.hour}:${_selectedTime.minute}',
+                                        style: TextStyle(color: Colors.grey[700]),
+                                      ),
+                                    ],
+                                  ),
 
-                                const SizedBox(height: 60),
+                                  const SizedBox(height: 30.0),
 
-                                SizedBox(
-                                  width: double.maxFinite,
-                                  child: Text(
+                                  Text(
                                     _title,
                                     style: TextStyle(
-                                        color: widget.isCashIn
-                                            ? Colors.green[400]
-                                            : Colors.red[400],
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 24),
+                                      color: widget.isCashIn ? Colors.green : Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24.0,
+                                    ),
                                     textAlign: TextAlign.left,
                                   ),
-                                ),
 
-                                const SizedBox(
-                                  height: 30,
-                                ),
+                                  const SizedBox(height: 30.0),
 
-                                // Amount Field
-                                TextFormField(
-                                  initialValue: _amount.toString(),
-                                  validator: RequiredValidator(
-                                      errorText: 'Please enter an amount'),
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Amount',
-                                  ),
-                                  onChanged: (value) => setState(() => _amount =
-                                      value.isNotEmpty
-                                          ? double.parse(value)
-                                          : 0),
-                                ),
-
-                                const SizedBox(height: 20),
-
-                                // Description Field
-                                TextFormField(
-                                  initialValue: _description,
-                                  validator: RequiredValidator(
-                                      errorText: 'Please enter a description'),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Description',
-                                  ),
-                                  onChanged: (value) =>
-                                      setState(() => _description = value),
-                                ),
-
-                                const SizedBox(height: 20),
-
-                                // Payment Mode Field (Dropdown)
-                                DropdownButtonFormField<String>(
-                                  value: _paymentMode,
-                                  items: [
-                                    'Cash',
-                                    'Credit Card',
-                                    'Debit Card',
-                                    'Online Transfer'
-                                  ].map((String mode) {
-                                    return DropdownMenuItem<String>(
-                                      value: mode,
-                                      child: Text(mode),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? value) => setState(
-                                      () => _paymentMode = value ?? ''),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Payment Mode',
-                                  ),
-                                ),
-
-                                const SizedBox(height: 40),
-
-                                // Save and Add New Button
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: 120,
-                                      height: 40,
-                                      child: ElevatedButton(
-                                        onPressed:
-                                            _isLoading ? null : _saveEntry,
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                20), // Adjust the border radius as needed
-                                          ),
-                                          // Add your desired background color here
-                                          backgroundColor: _isLoading
-                                              ? Colors.grey
-                                              : widget.isCashIn
-                                            ? Colors.green[600]
-                                            : Colors.red[600],
-                                        ),
-                                        child: _isLoading
-                                            ? const CircularProgressIndicator()
-                                            : const Text(
-                                                'Save',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 17,
-                                                ),
-                                              ),
-                                      ),
+                                  // Amount Field
+                                  TextFormField(
+                                    initialValue: widget.entry == null? null : _amount.toString(),
+                                    validator: RequiredValidator(
+                                        errorText: 'Please enter an amount'),
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Amount',
+                                      border: OutlineInputBorder(),
                                     ),
+                                    onChanged: (value) => setState(
+                                            () => _amount = value.isNotEmpty
+                                            ? double.parse(value)
+                                            : 0),
+                                  ),
 
-                                    // ElevatedButton(
-                                    //   onPressed: _isLoading ? null : _saveAndAddNew,
-                                    //   child: _isLoading ? const CircularProgressIndicator() : const Text('Save & Add New'),
-                                    // ),
-                                  ],
-                                ),
-                              ],
+                                  const SizedBox(height: 20.0),
+
+                                  // Description Field
+                                  TextFormField(
+                                    initialValue: _description,
+                                    validator: RequiredValidator(
+                                        errorText: 'Please enter a description'),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Description',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onChanged: (value) =>
+                                        setState(() => _description = value),
+                                  ),
+
+                                  const SizedBox(height: 20.0),
+
+                                  // Payment Mode Field (Dropdown)
+                                  DropdownButtonFormField<String>(
+                                    value: _paymentMode,
+                                    items: [
+                                      'Cash',
+                                      'Credit Card',
+                                      'Debit Card',
+                                      'Online Transfer'
+                                    ].map((String mode) {
+                                      return DropdownMenuItem<String>(
+                                        value: mode,
+                                        child: Text(mode),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? value) => setState(
+                                            () => _paymentMode = value ?? ''),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Payment Mode',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 30.0),
+
+                                  // Save and Add New Button
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: _isLoading ? null : _saveEntry,
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            backgroundColor: widget.isCashIn
+                                                ? Colors.green
+                                                : Colors.red,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 16.0),
+                                          ),
+                                          child: _isLoading
+                                              ? const CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                              : const Text(
+                                            'Save',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                // const SizedBox(
-                //   height: 140,
-                //   width: 120,
-                //   child: Image(image: AssetImage('assets/images/200 px.png')),
-                // ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        }
       ),
     );
   }
@@ -237,17 +233,17 @@ class _EntryFormState extends State<EntryForm> {
         _isLoading = true;
       });
       final entry = Entry(
-        createdAt: DateTime.now(),
+        createdAt: _selectedDate,
         updatedAt: DateTime.now(),
         isCashIn: widget.isCashIn,
         amount: _amount,
         description: _description,
         bookMemberRef: DataModel().usersCollection.doc(
-            Provider.of<AuthProvider>(context, listen: false)
-                .currentUser
-                ?.email),
+            Provider.of<AuthProvider>(context, listen: false).currentUser?.email),
         paymentModeRef: DataModel().paymentModeCollection.doc(_paymentMode),
+        ref: widget.entry?.ref
       );
+
       // Use BookProvider to save the entry
       await Provider.of<BookProvider>(context, listen: false)
           .addBookEntry(widget.book, entry);

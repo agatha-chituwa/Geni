@@ -79,6 +79,9 @@ class BookProvider extends ChangeNotifier {
 
   Future<List<BusinessBook>> getBusinessBooks(DocumentReference businessRef) async {
     final businessBooks = await _bookRepository.getBooksOfBusiness(businessRef);
+    for (final b in businessBooks) {
+      await loadBookMembers(b.book!);
+    }
     return businessBooks;
   }
 
@@ -90,6 +93,8 @@ class BookProvider extends ChangeNotifier {
   Future<void> addBookEntry(Book book, Entry entry) async {
     await _bookRepository.addBookEntry(book.ref!, entry);
     book.balance += entry.isCashIn? entry.amount : -entry.amount;
+    book.totalCashIn += entry.isCashIn? entry.amount : 0;
+    book.totalCashOut += entry.isCashIn? 0 : entry.amount;
     await updateBook(book);
     notifyListeners();
   }
@@ -98,13 +103,31 @@ class BookProvider extends ChangeNotifier {
     await _bookRepository.updateEntry(entry);
   }
 
-  Future<void> deleteEntry(Entry entry) async {
+  Future<void> deleteEntry(Entry entry, Book book) async {
     await _bookRepository.deleteEntry(entry);
+    book.balance -= entry.isCashIn? entry.amount : -entry.amount;
+    book.totalCashIn -= entry.isCashIn? entry.amount : 0;
+    book.totalCashOut -= entry.isCashIn? 0 : entry.amount;
+    await updateBook(book);
+    notifyListeners();
   }
 
   Future<List<Entry>> getEntriesOfBook(DocumentReference bookRef) async {
     _entries = await _bookRepository.getEntriesOfBook(bookRef);
     notifyListeners();
+    debugPrint('Fetched entries ${_entries.length}');
     return _entries;
+  }
+
+  loadBookMembers(Book entity) async {
+    entity.members = (await getBookMembers(entity.ref!)) ?? [];
+  }
+
+  getBookMembers(DocumentReference<Object?> documentReference) {
+    _bookRepository.getMembersOfBook(documentReference);
+  }
+
+  removeUserBook(UserBook member) async {
+    await member.ref!.delete();
   }
 }

@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.geni_app">
    <application
-        android:label="geni_app"
+        android:label="Geni"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"

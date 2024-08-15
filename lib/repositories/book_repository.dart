@@ -5,6 +5,8 @@ import 'package:geni_app/model/business_book_model.dart';
 import 'package:geni_app/model/entry_model.dart';
 import 'package:geni_app/model/user_book_model.dart';
 
+import '../model/user_model.dart';
+
 class BookRepository {
   final DataModel _dataModel = DataModel();
 
@@ -23,7 +25,15 @@ class BookRepository {
     return book.ref!.update(book.toMap());
   }
 
-  Future<void> deleteBook(Book book) {
+  Future<void> deleteBook(Book book) async {
+    final bb = await _dataModel.businessBookCollection.where('bookReference', isEqualTo: book.ref).get();
+    for(final b in bb.docs) {
+      b.reference.delete();
+    }
+    final bu = await _dataModel.userBookCollection.where('bookReference', isEqualTo: book.ref).get();
+    for(final b in bu.docs) {
+      b.reference.delete();
+    }
     return book.ref!.delete();
   }
 
@@ -116,5 +126,18 @@ class BookRepository {
       });
     }
     return userBooks;
+  }
+
+  Future<List<UserBook>> getMembersOfBook(DocumentReference<Object?> documentReference) async {
+    final bookMembers = (await _dataModel.businessMembersCollection.where('bookReference', isEqualTo: documentReference).get())
+        .docs.map((doc) => UserBook.fromMap(doc.data() as Map<String, dynamic>)).toList();
+
+    for (var element in bookMembers) {
+    await element.userReference.get().then((value) {
+    element.member = User.fromMap(value.data() as Map<String, dynamic>);
+    });
+    }
+
+    return bookMembers;
   }
 }

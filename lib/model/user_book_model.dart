@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geni_app/model/book_model.dart';
+import 'package:geni_app/model/user_model.dart';
 
 class UserBook {
   final DocumentReference userReference; // Reference to the User document
@@ -9,7 +10,8 @@ class UserBook {
   final DateTime updatedAt;
   DocumentReference? ref;
 
-  Book? book; // Reference to the UserBook document itself
+  Book? book;
+  User? member;
 
   UserBook({
     required this.userReference,
@@ -17,7 +19,7 @@ class UserBook {
     required this.bookReference,
     required this.createdAt,
     required this.updatedAt,
-    required this.ref,
+    this.ref,
   });
 
   factory UserBook.fromMap(Map<String, dynamic> data) {

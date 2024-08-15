@@ -18,7 +18,7 @@ class BusinessProvider extends ChangeNotifier {
 
   init(DocumentReference? userReference) async {
     await _loadBusinesses();
-    if (userReference != null) loadUserBusinesses(userReference);
+    if (userReference != null) await loadUserBusinesses(userReference);
   }
 
   Future<void> _loadBusinesses() async {
@@ -74,10 +74,10 @@ class BusinessProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteBusiness(Business business) async {
+  Future<void> deleteBusiness(BusinessMember business) async {
     try {
-      await _businessRepository.deleteBusiness(business);
       _businesses.remove(business);
+      await _businessRepository.deleteBusiness(business.business!);
       notifyListeners();
     } catch (error) {
       // Handle error
@@ -107,6 +107,14 @@ class BusinessProvider extends ChangeNotifier {
     } catch (error) {
       // Handle error
     }
+  }
+
+  loadBusinessMembers(Business entity) async {
+    entity.members = await getBusinessMembers(entity.ref!);
+  }
+
+  removeBusinessMember(BusinessMember member) async {
+    await member.ref!.delete();
   }
   
 }

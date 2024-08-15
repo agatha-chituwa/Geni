@@ -19,9 +19,6 @@ class BusinessRepository {
   }
 
   Future<List<BusinessMember>> getBusinessMembers(DocumentReference businessRef) async {
-    // return _dataModel.businessMembersCollection.where('businessReference', isEqualTo: businessRef).snapshots().map((sn) {
-    //   return sn.docs.map((doc) => BusinessMember.fromMap(doc.data() as Map<String, dynamic>)).toList();
-    // });
     final businessMembers = (await _dataModel.businessMembersCollection.where('businessReference', isEqualTo: businessRef).get())
         .docs.map((doc) => BusinessMember.fromMap(doc.data() as Map<String, dynamic>)).toList();
 
@@ -38,7 +35,13 @@ class BusinessRepository {
     return business.ref!.update(business.toMap());
   }
 
-  Future<void> deleteBusiness(Business business) {
+  Future<void> deleteBusiness(Business business) async {
+    for(final b in (await _dataModel.businessBookCollection.where('businessReference', isEqualTo: business.ref).get()).docs) {
+      b.reference.delete();
+    }
+    for(final b in (await _dataModel.businessMembersCollection.where('businessReference', isEqualTo: business.ref).get()).docs) {
+      b.reference.delete();
+    }
     return business.ref!.delete();
   }
 

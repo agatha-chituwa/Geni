@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'business_member_model.dart';
+
 class Business {
   final String name;
   final int numberOfEmployees;
@@ -7,6 +9,7 @@ class Business {
   final DateTime createdAt;
   final DateTime updatedAt;
   DocumentReference? ref;
+  List<BusinessMember> members = [];
 
   Business({
     required this.name,
