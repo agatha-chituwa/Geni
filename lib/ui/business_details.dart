@@ -150,80 +150,109 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
   }
 
   Widget _buildBookEntry(BusinessBook book, BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 3,
-      color: book.book!.balance < 0? Colors.red[50] : Colors.blue[50],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => FinancialBookPage(book: book.book!, role: business.roleReference.id.toLowerCase())),
-          ).then((value) => _refreshBooks(context));
-        },
-        title: Text(
-          book.book?.name ?? 'Unknown',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              'Balance (MWK):',
-              style: TextStyle(fontSize: 16),
+  return FutureBuilder<List<double>>(
+    future: Provider.of<BookProvider>(context, listen: false).getBalances(book.book!),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          elevation: 3,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          child: const ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            title: Text(
+              'Loading...',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(width: 8,),
-            Text(
-              book.book?.balance.toString() ?? '0',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            subtitle: Center(child: CircularProgressIndicator()),
+          ),
+        );
+      } else if (snapshot.hasError) {
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          elevation: 3,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          child: const ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            title: Text(
+              'Error loading balance',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ],
-        ),
-        trailing: // (
-        //       book.book?.members.firstWhere(
-        //       (m) => m.userReference.id == Provider.of<AuthProvider>(context, listen: false).currentUser?.email,
-        //     ).roleReference.id.toLowerCase() != "viewer"
-        //     )
-        (business.roleReference.id.toLowerCase() != 'viewer') ? PopupMenuButton<String>(
-          onSelected: (value) {
-            switch (value) {
-              case 'edit':
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NewBook(business: business.business, book: book.book)),
-                ).then((value) => _refreshBooks(context));
-                break;
-              case 'add_cash_in':
-                _navigateToAddEntry(context, book, true);
-                break;
-              case 'add_cash_out':
-                _navigateToAddEntry(context, book, false);
-                break;
-            }
-          },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-            const PopupMenuItem<String>(
-              value: 'edit',
-              child: Text('Edit'),
+          ),
+        );
+      } else {
+        final balances = snapshot.data!;
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          elevation: 3,
+          color: balances[2] < 0 ? Colors.red[50] : Colors.blue[50],
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FinancialBookPage(book: book.book!, role: business.roleReference.id.toLowerCase())),
+              ).then((value) => _refreshBooks(context));
+            },
+            title: Text(
+              book.book?.name ?? 'Unknown',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const PopupMenuItem<String>(
-              value: 'add_cash_in',
-              child: Text('Add Cash In'),
+            subtitle: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Text(
+                  'Balance (MWK):',
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(width: 8,),
+                Text(
+                  balances[2].toString(),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            const PopupMenuItem<String>(
-              value: 'add_cash_out',
-              child: Text('Add Cash Out'),
-            ),
-          ],
-        ) : null,
-      ),
-    );
-  }
-
+            trailing: (business.roleReference.id.toLowerCase() != 'viewer') ? PopupMenuButton<String>(
+              onSelected: (value) {
+                switch (value) {
+                  case 'edit':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NewBook(business: business.business, book: book.book)),
+                    ).then((value) => _refreshBooks(context));
+                    break;
+                  case 'add_cash_in':
+                    _navigateToAddEntry(context, book, true);
+                    break;
+                  case 'add_cash_out':
+                    _navigateToAddEntry(context, book, false);
+                    break;
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Text('Edit'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'add_cash_in',
+                  child: Text('Add Cash In'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'add_cash_out',
+                  child: Text('Add Cash Out'),
+                ),
+              ],
+            ) : null,
+          ),
+        );
+      }
+    },
+  );
+}
   void _navigateToAddEntry(BuildContext context, BusinessBook book, bool isCashIn) {
     Navigator.push(
       context,

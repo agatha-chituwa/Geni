@@ -1,4 +1,6 @@
 
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geni_app/model/book_model.dart';
@@ -117,6 +119,20 @@ class BookProvider extends ChangeNotifier {
     notifyListeners();
     debugPrint('Fetched entries ${_entries.length}');
     return _entries;
+  }
+
+  Future<List<double>> getBalances(Book book) async {
+    final entries = await getEntriesOfBook(book.ref!);
+    double totalCashIn = 0.0;
+    double totalCashout = 0.0;
+    for (final entry in entries) {
+      totalCashIn += entry.isCashIn? entry.amount : 0;
+      totalCashout += entry.isCashIn? 0 : entry.amount;
+    }
+    book.totalCashOut = totalCashout;
+    book.totalCashIn = totalCashIn;
+    book.balance = totalCashIn - totalCashout;
+    return [totalCashIn, totalCashout, totalCashIn - totalCashout];
   }
 
   loadBookMembers(Book entity) async {

@@ -1,4 +1,5 @@
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:geni_app/database/data_model.dart';
 import 'package:geni_app/model/book_model.dart';
@@ -9,6 +10,7 @@ import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/state_providers/users_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 import '../model/business_member_model.dart';
 
@@ -261,32 +263,49 @@ class _MembersPageState extends State<MembersPage> {
   Future<void> _addMember() async {
     final user = _searchResults.firstWhere((user) => user.email == _selectedUser);
 
-    if (widget.isBusiness
-      ? (widget.entity as Business).members.any((member) => member.member?.email == user.email)
-    : (widget.entity as Book).members.any((member) => member.member?.email == user.email)) {
+    // Check if the user is already added
+    bool userAlreadyAdded = widget.isBusiness
+        ? (widget.entity as Business)
+        .members
+        .any((member) => member.member?.email == user.email)
+        : (widget.entity as Book)
+        .members
+        .any((member) => member.member?.email == user.email);
+
+    if (userAlreadyAdded) {
       _showAlreadyAddedMessage(user.name);
     } else {
       setState(() {
         _addingMember = true;
       });
+
+      // Add the member to the business or book
       if (widget.isBusiness) {
         await Provider.of<BusinessProvider>(context, listen: false).addBusinessMember(
-            BusinessMember(
-                userReference: user.ref!,
-                roleReference: DataModel().rolesCollection.doc(_selectedRole),
-                businessReference: (widget.entity as Business).ref!,
-                createdAt: DateTime.now(),
-                updatedAt: DateTime.now()));
+          BusinessMember(
+            userReference: user.ref!,
+            roleReference: DataModel().rolesCollection.doc(_selectedRole),
+            businessReference: (widget.entity as Business).ref!,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ),
+        );
       } else {
         await Provider.of<BookProvider>(context, listen: false).addUserBook(
-            UserBook(
-                userReference: user.ref!,
-                roleReference: DataModel().rolesCollection.doc(_selectedRole),
-                bookReference: (widget.entity as Book).ref!,
-                createdAt: DateTime.now(),
-                updatedAt: DateTime.now()));
+          UserBook(
+            userReference: user.ref!,
+            roleReference: DataModel().rolesCollection.doc(_selectedRole),
+            bookReference: (widget.entity as Book).ref!,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ),
+        );
       }
 
+      // Send an email notification to the user
+      await _sendEmailNotification(user.email, user.name, widget.isBusiness? "Business" : "Book");
+
+      // Reset the form and refresh the member list
       setState(() {
         _searchResults.clear();
         _selectedUser = null;
@@ -295,6 +314,26 @@ class _MembersPageState extends State<MembersPage> {
         _addingMember = false;
         _loadMembers();
       });
+    }
+  }
+
+
+  Future<void> _sendEmailNotification(String userEmail, String userName, String entityType) async {
+    try {
+      HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('sendEmailNotification');
+      final response = await callable.call(<String, dynamic>{
+        'email': userEmail,
+        'name': userName,
+        'entity': entityType, // either 'business' or 'book'
+      });
+
+      if (response.data['success']) {
+        print('Email sent successfully');
+      } else {
+        print('Failed to send email: ${response.data['error']}');
+      }
+    } catch (e) {
+      print('Error calling cloud function: $e');
     }
   }
 
