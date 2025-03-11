@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geni_app/database/data_model.dart';
@@ -100,6 +102,7 @@ class BusinessProvider extends ChangeNotifier {
     try {
       isLoading = true;
       //notifyListeners();
+      debugPrint("USER REFERENCE: $userReference");
       _userBusinesses = await _businessRepository.getUserBusinesses(userReference);
       debugPrint("USER BUSINESS");
       isLoading = false;

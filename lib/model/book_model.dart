@@ -7,21 +7,20 @@ class Book {
   final DateTime createdAt;
   DateTime updatedAt;
   DocumentReference? ref;
-  double balance = 0.0;
-  double totalCashIn = 0.0;
-  double totalCashOut = 0.0;
-
   List<UserBook> members = [];
+  double balance = 0;
+  double totalCashIn = 0;
+  double totalCashOut = 0;
 
   Book({
     required this.name,
     required this.description,
     required this.createdAt,
     required this.updatedAt,
-    this.balance = 0.0,
-    this.totalCashIn = 0.0,
-    this.totalCashOut = 0.0,
     this.ref,
+    this.balance = 0,
+    this.totalCashIn = 0,
+    this.totalCashOut = 0,
   });
 
   factory Book.fromMap(Map<String, dynamic> data) {

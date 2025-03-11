@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:geni_app/login/email_login.dart';
-import 'package:geni_app/state_providers/auth_provider.dart';
 import 'package:geni_app/ui/business_form.dart';
 import 'package:geni_app/ui/faq_page.dart';
 import 'package:geni_app/ui/profile_page.dart';
-import 'package:provider/provider.dart';
 
 import 'business_list_page.dart';
 
@@ -43,7 +40,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProfilePage()
+                  builder: (context) => const ProfilePage()
                 ),
               );
             },

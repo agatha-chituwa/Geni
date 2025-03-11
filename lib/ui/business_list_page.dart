@@ -37,8 +37,10 @@ class _BusinessListPageState extends State<BusinessListPage> {
 
   void _businessesUpdated() {
     setState(() {
+      debugPrint("Businesses UPADATED");
       _userBusinesses = _process(Provider.of<BusinessProvider>(context, listen: false).userBusinesses);
       _isLoading = Provider.of<BusinessProvider>(context, listen: false).isLoading;
+      debugPrint("Businesses: $_userBusinesses and $_isLoading");
     });
   }
 

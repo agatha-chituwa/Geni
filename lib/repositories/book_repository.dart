@@ -128,14 +128,19 @@ class BookRepository {
     return userBooks;
   }
 
-  Future<List<UserBook>> getMembersOfBook(DocumentReference<Object?> documentReference) async {
-    final bookMembers = (await _dataModel.businessMembersCollection.where('bookReference', isEqualTo: documentReference).get())
-        .docs.map((doc) => UserBook.fromMap(doc.data() as Map<String, dynamic>)).toList();
+  Future<List<UserBook>> getMembersOfBook(DocumentReference bookRef) async {
+    final bookMembers = (await _dataModel.userBookCollection
+      .where('bookReference', isEqualTo: bookRef)
+      .get())
+      .docs
+      .map((doc) => UserBook.fromMap(doc.data() as Map<String, dynamic>))
+      .toList();
 
-    for (var element in bookMembers) {
-    await element.userReference.get().then((value) {
-    element.member = User.fromMap(value.data() as Map<String, dynamic>);
-    });
+    // Load user data for each member
+    for (var member in bookMembers) {
+      await member.userReference.get().then((value) {
+        member.member = User.fromMap(value.data() as Map<String, dynamic>);
+      });
     }
 
     return bookMembers;

@@ -136,12 +136,33 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
             ),
           );
         } else {
-          snapshot.data!.sort((a, b) => b.book!.createdAt.millisecondsSinceEpoch.compareTo(a.book!.createdAt.millisecondsSinceEpoch));
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              final book = snapshot.data![index];
-              return _buildBookEntry(book, context);
+          // Filter books based on membership and role
+          return FutureBuilder<List<BusinessBook>>(
+            future: _filterAccessibleBooks(snapshot.data!),
+            builder: (context, filteredSnapshot) {
+              if (filteredSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final books = filteredSnapshot.data ?? [];
+              if (books.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No accessible books found.',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                );
+              }
+
+              books.sort((a, b) => b.book!.createdAt.millisecondsSinceEpoch
+                  .compareTo(a.book!.createdAt.millisecondsSinceEpoch));
+
+              return ListView.builder(
+                itemCount: books.length,
+                itemBuilder: (context, index) {
+                  return _buildBookEntry(books[index], context);
+                },
+              );
             },
           );
         }
@@ -233,10 +254,11 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  value: 'edit',
-                  child: Text('Edit'),
-                ),
+                if (business.roleReference.id.toLowerCase() == 'owner')
+                  const PopupMenuItem<String>(
+                    value: 'edit',
+                    child: Text('Edit'),
+                  ),
                 const PopupMenuItem<String>(
                   value: 'add_cash_in',
                   child: Text('Add Cash In'),
@@ -300,4 +322,30 @@ class BusinessDetailsState extends State<BusinessDetailPage> {
     });
   }
 
+  Future<List<BusinessBook>> _filterAccessibleBooks(List<BusinessBook> books) async {
+    // Business owner can see all books
+
+    if (business.roleReference.id.toLowerCase() == 'owner') {
+      return books;
+    }
+
+    final filteredBooks = <BusinessBook>[];
+    final bookProvider = Provider.of<BookProvider>(context, listen: false);
+
+    for (var businessBook in books) {
+      // Load book members if not already loaded
+      await bookProvider.loadBookMembers(businessBook.book!);
+      
+      // Check if current user is a member of the book
+      final isMember = businessBook.book!.members.any(
+        (member) => member.userReference.id == business.userReference.id
+      );
+
+      if (isMember) {
+        filteredBooks.add(businessBook);
+      }
+    }
+
+    return filteredBooks;
+  }
 }

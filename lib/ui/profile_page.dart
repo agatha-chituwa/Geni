@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geni_app/state_providers/auth_provider.dart';
-import 'package:geni_app/model/user_model.dart';
 import 'package:geni_app/login/email_login.dart';
 
 class ProfilePage extends StatelessWidget {

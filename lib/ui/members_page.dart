@@ -10,7 +10,6 @@ import 'package:geni_app/state_providers/book_provider.dart';
 import 'package:geni_app/state_providers/business_provider.dart';
 import 'package:geni_app/state_providers/users_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 import '../model/business_member_model.dart';
 
@@ -129,12 +128,12 @@ class _MembersPageState extends State<MembersPage> {
         member.roleReference.id,
         style: const TextStyle(fontSize: 14.0, color: Colors.grey),
       ),
-      trailing: IconButton(
+      trailing: member.roleReference.id != "owner"? IconButton(
         icon: const Icon(Icons.delete, color: Colors.red),
         onPressed: () {
           _confirmRemove(member);
         },
-      ),
+      ): null,
     );
   }
 

@@ -1,6 +1,3 @@
-
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geni_app/model/book_model.dart';
@@ -122,7 +119,7 @@ class BookProvider extends ChangeNotifier {
   }
 
   Future<List<double>> getBalances(Book book) async {
-    final entries = await getEntriesOfBook(book.ref!);
+    final entries = await _bookRepository.getEntriesOfBook(book.ref!);
     double totalCashIn = 0.0;
     double totalCashout = 0.0;
     for (final entry in entries) {
@@ -135,8 +132,23 @@ class BookProvider extends ChangeNotifier {
     return [totalCashIn, totalCashout, totalCashIn - totalCashout];
   }
 
-  loadBookMembers(Book entity) async {
-    entity.members = (await getBookMembers(entity.ref!)) ?? [];
+  Future<void> loadBookMembers(Book book) async {
+    book.members = await _bookRepository.getMembersOfBook(book.ref!);
+    //notifyListeners();
+  }
+
+  Future<List<Book>> getBooksForMember(DocumentReference userRef) async {
+    final userBooks = await _bookRepository.getBooksOfUser(userRef);
+    final books = <Book>[];
+    
+    for (var userBook in userBooks) {
+      if (userBook.book != null) {
+        await loadBookMembers(userBook.book!);
+        books.add(userBook.book!);
+      }
+    }
+    
+    return books;
   }
 
   getBookMembers(DocumentReference<Object?> documentReference) {
@@ -145,5 +157,16 @@ class BookProvider extends ChangeNotifier {
 
   removeUserBook(UserBook member) async {
     await member.ref!.delete();
+  }
+
+  bool isUserMemberOfBook(String userId, Book book) {
+    return book.members.any((member) => member.userReference.id == userId);
+  }
+
+  Future<bool> loadAndCheckMembership(String userId, Book book) async {
+    if (book.members.isEmpty) {
+      await loadBookMembers(book);
+    }
+    return isUserMemberOfBook(userId, book);
   }
 }
